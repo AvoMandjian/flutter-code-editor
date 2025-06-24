@@ -64,10 +64,7 @@ class PopupState extends State<Popup> {
     final bool isHorizontalOverflowed = _isHorizontallyOverflowed();
     final double leftOffsetLimit =
         // TODO(nausharipov): find where 100 comes from
-        widget.editingWindowSize.width -
-            Sizes.autocompletePopupMaxWidth +
-            (widget.editorOffset?.dx ?? 0) -
-            100;
+        widget.editingWindowSize.width - Sizes.autocompletePopupMaxWidth + (widget.editorOffset?.dx ?? 0) - 100;
 
     // Fixes assertion error when ISC isn't attached but _attach method
     // of ISC instance are being called
@@ -80,13 +77,9 @@ class PopupState extends State<Popup> {
       bucket: pageStorageBucket,
       child: Positioned(
         left: isHorizontalOverflowed ? leftOffsetLimit : widget.normalOffset.dx,
-        top: verticalFlipRequired
-            ? widget.flippedOffset.dy
-            : widget.normalOffset.dy,
+        top: verticalFlipRequired ? widget.flippedOffset.dy : widget.normalOffset.dy,
         child: Container(
-          alignment: verticalFlipRequired
-              ? Alignment.bottomCenter
-              : Alignment.topCenter,
+          alignment: verticalFlipRequired ? Alignment.bottomCenter : Alignment.topCenter,
           constraints: const BoxConstraints(
             maxHeight: Sizes.autocompletePopupMaxHeight,
             maxWidth: Sizes.autocompletePopupMaxWidth,
@@ -119,21 +112,15 @@ class PopupState extends State<Popup> {
   }
 
   bool _isVerticalFlipRequired() {
-    final isPopupShorterThanWindow =
-        Sizes.autocompletePopupMaxHeight < widget.editingWindowSize.height;
-    final isPopupOverflowingHeight = widget.normalOffset.dy +
-            Sizes.autocompletePopupMaxHeight -
-            (widget.editorOffset?.dy ?? 0) >
-        widget.editingWindowSize.height;
+    final isPopupShorterThanWindow = Sizes.autocompletePopupMaxHeight < widget.editingWindowSize.height;
+    final isPopupOverflowingHeight =
+        widget.normalOffset.dy + Sizes.autocompletePopupMaxHeight - (widget.editorOffset?.dy ?? 0) > widget.editingWindowSize.height;
 
     return isPopupOverflowingHeight && isPopupShorterThanWindow;
   }
 
   bool _isHorizontallyOverflowed() {
-    return widget.normalOffset.dx -
-            (widget.editorOffset?.dx ?? 0) +
-            Sizes.autocompletePopupMaxWidth >
-        widget.editingWindowSize.width;
+    return widget.normalOffset.dx - (widget.editorOffset?.dx ?? 0) + Sizes.autocompletePopupMaxWidth > widget.editingWindowSize.width;
   }
 
   Widget _buildListItem(int index) {
@@ -143,19 +130,18 @@ class PopupState extends State<Popup> {
         onTap: () {
           widget.controller.selectedIndex = index;
           widget.parentFocusNode.requestFocus();
-        },
-        onDoubleTap: () {
-          widget.controller.selectedIndex = index;
-          widget.parentFocusNode.requestFocus();
           widget.controller.onCompletionSelected();
         },
+        // onDoubleTap: () {
+        //   widget.controller.selectedIndex = index;
+        //   widget.parentFocusNode.requestFocus();
+        //   widget.controller.onCompletionSelected();
+        // },
         hoverColor: Colors.grey.withOpacity(0.1),
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         child: ColoredBox(
-          color: widget.controller.selectedIndex == index
-              ? Colors.blueAccent.withOpacity(0.5)
-              : Colors.transparent,
+          color: widget.controller.selectedIndex == index ? Colors.blueAccent.withOpacity(0.5) : Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
