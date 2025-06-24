@@ -8,13 +8,13 @@ class PopupController extends ChangeNotifier {
   bool enabled = true;
 
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener =
-      ItemPositionsListener.create();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
 
   /// Should be called when an active list item is selected to be inserted into the text
   late final void Function() onCompletionSelected;
+  void Function(String word) onInsertSelectedWord;
 
-  PopupController({required this.onCompletionSelected}) : super();
+  PopupController({required this.onCompletionSelected, required this.onInsertSelectedWord}) : super();
 
   set selectedIndex(int value) {
     _selectedIndex = value;
@@ -44,12 +44,15 @@ class PopupController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void callOnInsertSelectedWord() {
+    onInsertSelectedWord(suggestions[selectedIndex]);
+  }
+
   /// Changes the selected item and scrolls through the list of completions on keyboard arrows pressed
   void scrollByArrow(ScrollDirection direction) {
     final previousSelectedIndex = selectedIndex;
     if (direction == ScrollDirection.up) {
-      selectedIndex =
-          (selectedIndex - 1 + suggestions.length) % suggestions.length;
+      selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
     } else {
       selectedIndex = (selectedIndex + 1) % suggestions.length;
     }
@@ -76,7 +79,7 @@ class PopupController extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getSelectedWord() => suggestions[selectedIndex];
+  String getSelectedWord() => selectedIndex == -1 ? '' : suggestions[selectedIndex];
 }
 
 /// Possible directions of completions list navigation

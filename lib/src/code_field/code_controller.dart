@@ -37,6 +37,7 @@ import 'span_builder.dart';
 
 class CodeController extends TextEditingController {
   Mode? _language;
+  void Function(String word)? onInsertSelectedWord;
 
   /// A highlight language to parse the text with
   ///
@@ -188,7 +189,10 @@ class CodeController extends TextEditingController {
       _styleList.addAll(patternMap!.values);
     }
 
-    popupController = PopupController(onCompletionSelected: insertSelectedWord);
+    popupController = PopupController(
+      onCompletionSelected: insertSelectedWord,
+      onInsertSelectedWord: (word) => onInsertSelectedWord?.call(word),
+    );
 
     unawaited(analyzeCode());
   }
@@ -392,11 +396,9 @@ class CodeController extends TextEditingController {
     final replacedText = text.replaceRange(
       startPosition,
       endReplacingPosition,
-      isCustomSuggestions
-          ? '$currentWord $selectedWord$additionalSpaceIfEnd${currentWord == '{' ? ' ' : ''}'
-          : '$selectedWord$additionalSpaceIfEnd',
+      isCustomSuggestions ? '$currentWord$selectedWord$additionalSpaceIfEnd' : '$selectedWord$additionalSpaceIfEnd',
     );
-    final carretNewIndex = endSelectionPosition + offsetIfEndsWithSpace + (isCustomSuggestions ? 2 : 0);
+    final carretNewIndex = endSelectionPosition + offsetIfEndsWithSpace + (isCustomSuggestions ? 1 : 0);
     final adjustedSelection = previousSelection.copyWith(
       baseOffset: carretNewIndex,
       extentOffset: carretNewIndex,
@@ -408,6 +410,7 @@ class CodeController extends TextEditingController {
     );
 
     popupController.hide();
+    popupController.callOnInsertSelectedWord();
   }
 
   String get fullText => _code.text;
