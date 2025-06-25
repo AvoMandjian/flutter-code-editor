@@ -37,7 +37,7 @@ import 'span_builder.dart';
 
 class CodeController extends TextEditingController {
   Mode? _language;
-  void Function(String word)? onInsertSelectedWord;
+  void Function(String word, PopupWordType? wordType)? onInsertSelectedWord;
 
   /// A highlight language to parse the text with
   ///
@@ -191,7 +191,7 @@ class CodeController extends TextEditingController {
 
     popupController = PopupController(
       onCompletionSelected: insertSelectedWord,
-      onInsertSelectedWord: (word) => onInsertSelectedWord?.call(word),
+      onInsertSelectedWord: (word, wordType) => onInsertSelectedWord?.call(word, wordType),
     );
 
     unawaited(analyzeCode());
@@ -371,46 +371,53 @@ class CodeController extends TextEditingController {
   }
 
   /// Inserts the word selected from the list of completions
-  void insertSelectedWord() {
-    final previousSelection = selection;
-    final selectedWord = popupController.getSelectedWord();
-    final startPosition = this.selection.base.offset - 1;
-    final currentWord = value.text[startPosition];
-    final isCustomSuggestions = value.wordAtCursorStart == null || value.wordAtCursor == null;
-
-    final endReplacingPosition = startPosition + currentWord.length;
-    final endSelectionPosition = startPosition + selectedWord.length;
-
-    var additionalSpaceIfEnd = '';
-    var offsetIfEndsWithSpace = 1;
-    if (text.length < endReplacingPosition + 1) {
-      additionalSpaceIfEnd = ' ';
+  void insertSelectedWord({
+    PopupWordType? wordType,
+  }) {
+    if (wordType == PopupWordType.statement) {
+      popupController.hide();
+      popupController.callOnInsertSelectedWord(wordType: wordType);
     } else {
-      final charAfterText = text[endReplacingPosition];
-      if (charAfterText != ' ' && !StringUtil.isDigit(charAfterText) && !StringUtil.isLetterEng(charAfterText)) {
-        // ex. case ';' or other finalizer, or symbol
-        offsetIfEndsWithSpace = 0;
+      final previousSelection = selection;
+      final selectedWord = popupController.getSelectedWord();
+      final startPosition = selection.base.offset - 1;
+      final currentWord = value.text[startPosition];
+      final isCustomSuggestions = value.wordAtCursorStart == null || value.wordAtCursor == null;
+
+      final endReplacingPosition = startPosition + currentWord.length;
+      final endSelectionPosition = startPosition + selectedWord.length;
+
+      var additionalSpaceIfEnd = '';
+      var offsetIfEndsWithSpace = 1;
+      if (text.length < endReplacingPosition + 1) {
+        additionalSpaceIfEnd = ' ';
+      } else {
+        final charAfterText = text[endReplacingPosition];
+        if (charAfterText != ' ' && !StringUtil.isDigit(charAfterText) && !StringUtil.isLetterEng(charAfterText)) {
+          // ex. case ';' or other finalizer, or symbol
+          offsetIfEndsWithSpace = 0;
+        }
       }
+
+      final replacedText = text.replaceRange(
+        startPosition,
+        endReplacingPosition,
+        isCustomSuggestions ? '$currentWord$selectedWord$additionalSpaceIfEnd' : '$selectedWord$additionalSpaceIfEnd',
+      );
+      final carretNewIndex = endSelectionPosition + offsetIfEndsWithSpace + (isCustomSuggestions ? 1 : 0);
+      final adjustedSelection = previousSelection.copyWith(
+        baseOffset: carretNewIndex,
+        extentOffset: carretNewIndex,
+      );
+
+      value = TextEditingValue(
+        text: replacedText,
+        selection: adjustedSelection,
+      );
+
+      popupController.hide();
+      popupController.callOnInsertSelectedWord();
     }
-
-    final replacedText = text.replaceRange(
-      startPosition,
-      endReplacingPosition,
-      isCustomSuggestions ? '$currentWord$selectedWord$additionalSpaceIfEnd' : '$selectedWord$additionalSpaceIfEnd',
-    );
-    final carretNewIndex = endSelectionPosition + offsetIfEndsWithSpace + (isCustomSuggestions ? 1 : 0);
-    final adjustedSelection = previousSelection.copyWith(
-      baseOffset: carretNewIndex,
-      extentOffset: carretNewIndex,
-    );
-
-    value = TextEditingValue(
-      text: replacedText,
-      selection: adjustedSelection,
-    );
-
-    popupController.hide();
-    popupController.callOnInsertSelectedWord();
   }
 
   String get fullText => _code.text;

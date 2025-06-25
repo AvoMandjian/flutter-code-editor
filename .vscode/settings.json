@@ -1,0 +1,23 @@
+{
+  "[dart]": {
+    "editor.rulers": [
+      145
+    ]
+  },
+  "dart.lineLength": 145,
+  "search.exclude": {
+    "**/.fvm": true,
+    "~/Documents/Workplace/digital_pomegranate/epifiny-admin-FORBUILD": true,
+    "~/Documents/Workplace/digital_pomegranate/su_flutter_widgets-FORBUILD": true
+  },
+  "files.watcherExclude": {
+    "**/.fvm": true,
+    "**/.dart_tool": true,
+    "**/android": true,
+    "**/ios": true,
+    "**/build": true,
+    "**/web": true
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.32.0",
+  "djlint.showInstallError": false
+}

@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../../util/enums.dart';
+
 class PopupController extends ChangeNotifier {
   late List<String> suggestions;
   int _selectedIndex = 0;
   bool shouldShow = false;
   bool enabled = true;
+  PopupWordType? wordType;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
 
   /// Should be called when an active list item is selected to be inserted into the text
-  late final void Function() onCompletionSelected;
-  void Function(String word) onInsertSelectedWord;
+  late final void Function({
+    PopupWordType? wordType,
+  }) onCompletionSelected;
+  void Function(String word, PopupWordType? wordType) onInsertSelectedWord;
 
   PopupController({required this.onCompletionSelected, required this.onInsertSelectedWord}) : super();
 
@@ -23,7 +28,10 @@ class PopupController extends ChangeNotifier {
 
   int get selectedIndex => _selectedIndex;
 
-  void show(List<String> suggestions) {
+  void show(
+    List<String> suggestions, {
+    PopupWordType? wordType,
+  }) {
     if (!enabled) {
       return;
     }
@@ -36,6 +44,7 @@ class PopupController extends ChangeNotifier {
         itemScrollController.jumpTo(index: 0);
       }
     });
+    this.wordType = wordType;
     notifyListeners();
   }
 
@@ -44,8 +53,10 @@ class PopupController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void callOnInsertSelectedWord() {
-    onInsertSelectedWord(suggestions[selectedIndex]);
+  void callOnInsertSelectedWord({
+    PopupWordType? wordType,
+  }) {
+    onInsertSelectedWord(suggestions[selectedIndex], wordType);
   }
 
   /// Changes the selected item and scrolls through the list of completions on keyboard arrows pressed
