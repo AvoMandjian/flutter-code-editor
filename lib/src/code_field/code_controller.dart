@@ -37,7 +37,6 @@ import 'span_builder.dart';
 
 class CodeController extends TextEditingController {
   /// used to enable jinja syntax highlighting
-  final bool isJinjaEnabled;
   Mode? _language;
   void Function(String word, PopupWordType? wordType)? onInsertSelectedWord;
 
@@ -126,6 +125,8 @@ class CodeController extends TextEditingController {
   @visibleForTesting
   TextSpan? lastTextSpan;
 
+  String? subLanguage;
+
   late final actions = <Type, Action<Intent>>{
     CommentUncommentIntent: CommentUncommentAction(controller: this),
     CopySelectionTextIntent: CopyAction(controller: this),
@@ -154,7 +155,7 @@ class CodeController extends TextEditingController {
   CodeController({
     String? text,
     Mode? language,
-    this.isJinjaEnabled = false,
+    this.subLanguage,
     AbstractAnalyzer analyzer = const DefaultLocalAnalyzer(),
     this.namedSectionParser,
     Set<String> readOnlySectionNames = const {},
@@ -792,7 +793,7 @@ class CodeController extends TextEditingController {
     return Code(
       text: text,
       language: language,
-      highlighted: highlight.parse(text, language: _languageId, isJinjaEnabled: isJinjaEnabled),
+      highlighted: highlight.parse(text, language: _languageId, subLanguage: subLanguage),
       namedSectionParser: namedSectionParser,
       readOnlySectionNames: _readOnlySectionNames,
       visibleSectionNames: _visibleSectionNames,

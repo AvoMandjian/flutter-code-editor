@@ -5,9 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/themes/monokai-sublime.dart';
-import 'package:highlight/languages/java.dart';
-
-import '../common/snippets.dart';
+import 'package:highlight/languages/jinja.dart';
 
 void main() {
   runApp(const CodeEditor());
@@ -20,9 +18,20 @@ class CodeEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     //controller.visibleSectionNames = {'section1'};
     final controller = CodeController(
-      text: javaFactorialSnippet,
-      language: java,
-      isJinjaEnabled: true,
+      text: '''
+{
+  "name": "{{ user.name }}",
+  "age": {{ user.age }},
+  "is_active": {% if user.active %}true{% else %}false{% endif %},
+  "roles": [
+    {% for role in user.roles %}
+    "{{ role }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+''',
+      language: jinja,
+      subLanguage: 'json',
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
