@@ -1,17 +1,21 @@
 import 'package:autotrie/autotrie.dart';
 import 'package:highlight/highlight_core.dart';
+import 'package:highlight/languages/all.dart';
 
 import '../code/reg_exp.dart';
 
 /// Accumulates textual data and suggests autocompletion based on it.
 class Autocompleter {
+  Autocompleter({
+    this.subLanguage,
+  });
   Mode? _mode;
   final _customAutocomplete = AutoComplete(engine: SortEngine.entriesOnly());
   final _keywordsAutocomplete = AutoComplete(engine: SortEngine.entriesOnly());
   final _textAutocompletes = <Object, AutoComplete>{};
   final _lastTexts = <Object, String>{};
   Set<String> _blacklistSet = const {};
-
+  String? subLanguage;
   static final _whitespacesRe = RegExp(r'\s+');
 
   /// The language to automatically extract keywords from.
@@ -25,7 +29,7 @@ class Autocompleter {
   void _parseKeywords() {
     _keywordsAutocomplete.clearEntries();
 
-    final keywords = mode?.keywords;
+    final keywords = mode?.keywords ?? allLanguages[subLanguage]?.keywords;
     if (keywords == null) {
       return;
     }
@@ -122,9 +126,7 @@ class Autocompleter {
     final result = {
       ..._customAutocomplete.suggest(prefix),
       ..._keywordsAutocomplete.suggest(prefix),
-      ..._textAutocompletes.values
-          .map((ac) => ac.suggest(prefix))
-          .expand((e) => e),
+      ..._textAutocompletes.values.map((ac) => ac.suggest(prefix)).expand((e) => e),
     }.where((e) => !_blacklistSet.contains(e)).toList(growable: false);
 
     result.sort();

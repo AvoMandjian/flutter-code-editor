@@ -105,7 +105,9 @@ class CodeController extends TextEditingController {
   final _styleList = <TextStyle>[];
   final _modifierMap = <String, CodeModifier>{};
   late PopupController popupController;
-  final autocompleter = Autocompleter();
+  late final autocompleter = Autocompleter(
+    subLanguage: subLanguage,
+  );
   late final historyController = CodeHistoryController(codeController: this);
 
   @internal

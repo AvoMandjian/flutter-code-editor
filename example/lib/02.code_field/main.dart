@@ -19,19 +19,27 @@ class CodeEditor extends StatelessWidget {
     //controller.visibleSectionNames = {'section1'};
     final controller = CodeController(
       text: '''
-{
-  "name": "{{ user.name }}",
-  "age": {{ user.age }},
-  "is_active": {% if user.active %}true{% else %}false{% endif %},
-  "roles": [
-    {% for role in user.roles %}
-    "{{ role }}"{% if not loop.last %},{% endif %}
-    {% endfor %}
-  ]
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My First HTML Page</title>
+</head>
+<body>
+    <h1>Welcome to My Website!</h1>
+    <p>This is a paragraph of text.</p>
+    <a href="https://www.example.com">Visit Example.com</a>
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+    </ul>
+    <img src="image.jpg" alt="An example image" width="200" height="150">
+</body>
+</html>
 ''',
       language: jinja,
-      subLanguage: 'json',
+      subLanguage: 'xml',
     );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
