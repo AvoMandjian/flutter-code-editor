@@ -10,8 +10,10 @@ environment:
 dependencies:
   flutter: { sdk: flutter }
   flutter_code_editor: { path: ../ }
-  flutter_highlight: { path: ../packages/highlight.dart/flutter_highlight }
-  highlight: { path: ../packages/highlight.dart/highlight }
+  flutter_highlight:
+    path: ../packages/highlight_with_jinja/flutter_highlight
+  highlight: 
+    path: ../packages/highlight_with_jinja/highlight
   http: ^1.1.0
 
 dev_dependencies:

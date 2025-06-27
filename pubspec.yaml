@@ -15,9 +15,9 @@ dependencies:
   equatable: ^2.0.5
   flutter: { sdk: flutter }
   flutter_highlight:
-    path: packages/highlight.dart/flutter_highlight
+    path: packages/highlight_with_jinja/flutter_highlight
   highlight:
-    path: packages/highlight.dart/highlight
+    path: packages/highlight_with_jinja/highlight
   http: ^1.1.0
   linked_scroll_controller: ^0.2.0
   meta: ^1.9.1

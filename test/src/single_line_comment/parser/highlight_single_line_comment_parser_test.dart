@@ -95,7 +95,7 @@ public class MyClass { // comment
       _Example(
         'Java. Breaks on number sign',
         language: java,
-        // https://github.com/git-touch/highlight.dart/issues/36
+        // https://github.com/git-touch/highlight_with_jinja/issues/36
         text: '''
 // slashed comment1
 text

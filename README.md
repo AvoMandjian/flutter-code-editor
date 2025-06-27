@@ -63,11 +63,11 @@ See the full runnable example [here](https://github.com/akvelon/flutter-code-edi
 ### Syntax Highlighting
 
 Flutter Code Editor supports
-[over a hundred languages](https://github.com/git-touch/highlight.dart/tree/master/highlight/lib/languages),
+[over a hundred languages](https://github.com/git-touch/highlight_with_jinja/tree/master/highlight/lib/languages),
 relying on the [highlight](https://pub.dev/packages/highlight) package for parsing code.
 
 To select a language, use a
-[corresponding variable](https://github.com/git-touch/highlight.dart/tree/master/highlight/lib/languages):
+[corresponding variable](https://github.com/git-touch/highlight_with_jinja/tree/master/highlight/lib/languages):
 
 ```dart
 import 'package:highlight/languages/python.dart'; // Each language is defined in its file.
@@ -135,7 +135,7 @@ If you only use the analyzers we ship, then this will not affect you.
 
 Flutter Code Editor supports themes from the [highlight](https://pub.dev/packages/flutter_highlight) package —
 see the full list of the pre-defined themes
-[here](https://github.com/git-touch/highlight.dart/tree/master/flutter_highlight/lib/themes).
+[here](https://github.com/git-touch/highlight_with_jinja/tree/master/flutter_highlight/lib/themes).
 
 Use `CodeTheme` widget to set the theme for underlying editors:
 
@@ -157,7 +157,7 @@ return MaterialApp(
 ### Custom Themes
 
 To use a custom theme, create a map of styles under the pre-defined class names —
-see [this example](https://github.com/git-touch/highlight.dart/blob/master/flutter_highlight/lib/themes/monokai-sublime.dart).
+see [this example](https://github.com/git-touch/highlight_with_jinja/blob/master/flutter_highlight/lib/themes/monokai-sublime.dart).
 
 
 ## Hiding Line Numbers, Errors, and Folding Handles
