@@ -36,6 +36,8 @@ import 'search_result_highlighted_builder.dart';
 import 'span_builder.dart';
 
 class CodeController extends TextEditingController {
+  /// used to enable jinja syntax highlighting
+  final bool isJinjaEnabled;
   Mode? _language;
   void Function(String word, PopupWordType? wordType)? onInsertSelectedWord;
 
@@ -152,6 +154,7 @@ class CodeController extends TextEditingController {
   CodeController({
     String? text,
     Mode? language,
+    this.isJinjaEnabled = false,
     AbstractAnalyzer analyzer = const DefaultLocalAnalyzer(),
     this.namedSectionParser,
     Set<String> readOnlySectionNames = const {},
@@ -789,7 +792,7 @@ class CodeController extends TextEditingController {
     return Code(
       text: text,
       language: language,
-      highlighted: highlight.parse(text, language: _languageId),
+      highlighted: highlight.parse(text, language: _languageId, isJinjaEnabled: isJinjaEnabled),
       namedSectionParser: namedSectionParser,
       readOnlySectionNames: _readOnlySectionNames,
       visibleSectionNames: _visibleSectionNames,

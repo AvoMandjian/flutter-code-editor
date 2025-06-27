@@ -13,17 +13,17 @@ void main() {
   runApp(const CodeEditor());
 }
 
-final controller = CodeController(
-  text: javaFactorialSnippet,
-  language: java,
-);
-
 class CodeEditor extends StatelessWidget {
   const CodeEditor({super.key});
 
   @override
   Widget build(BuildContext context) {
     //controller.visibleSectionNames = {'section1'};
+    final controller = CodeController(
+      text: javaFactorialSnippet,
+      language: java,
+      isJinjaEnabled: true,
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -32,6 +32,11 @@ class CodeEditor extends StatelessWidget {
           child: SingleChildScrollView(
             child: CodeField(
               controller: controller,
+              gutterStyle: const GutterStyle(
+                textStyle: TextStyle(
+                  height: 1.5,
+                ),
+              ),
             ),
           ),
         ),
