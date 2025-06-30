@@ -380,7 +380,7 @@ class CodeController extends TextEditingController {
   void insertSelectedWord({
     PopupWordType? wordType,
   }) {
-    if (wordType == PopupWordType.statement) {
+    if (wordType == PopupWordType.statement || wordType == PopupWordType.htmlTags) {
       popupController.hide();
       popupController.callOnInsertSelectedWord(wordType: wordType);
     } else {
