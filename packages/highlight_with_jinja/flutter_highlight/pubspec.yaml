@@ -1,0 +1,19 @@
+name: flutter_highlight
+description: Syntax highlighting widget for Flutter with lots of languages and themes support.
+version: 0.7.0
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.8.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  highlight:
+    path: ../highlight
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+# dependency_overrides:
+#   highlight:
+#     path: ../highlight
