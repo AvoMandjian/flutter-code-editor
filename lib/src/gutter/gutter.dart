@@ -67,16 +67,19 @@ class GutterWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
       width: style.showLineNumbers ? gutterWidth : null,
-      child: SingleChildScrollView(
-        controller: scrollController,
-        child: Table(
-          columnWidths: {
-            _lineNumberColumn: const FlexColumnWidth(),
-            _issueColumn: FixedColumnWidth(issueColumnWidth),
-            _foldingColumn: FixedColumnWidth(foldingColumnWidth),
-          },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: tableRows,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: SingleChildScrollView(
+          controller: scrollController,
+          child: Table(
+            columnWidths: {
+              _lineNumberColumn: const FlexColumnWidth(),
+              _issueColumn: FixedColumnWidth(issueColumnWidth),
+              _foldingColumn: FixedColumnWidth(foldingColumnWidth),
+            },
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            children: tableRows,
+          ),
         ),
       ),
     );
