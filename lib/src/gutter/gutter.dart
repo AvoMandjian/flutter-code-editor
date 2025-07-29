@@ -19,10 +19,12 @@ class GutterWidget extends StatelessWidget {
   const GutterWidget({
     required this.codeController,
     required this.style,
+    required this.scrollController,
   });
 
   final CodeController codeController;
   final GutterStyle style;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +37,10 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = style.width -
-        (style.showErrors ? 0 : _issueColumnWidth) -
-        (style.showFoldingHandles ? 0 : _foldingColumnWidth);
+    final gutterWidth = style.width - (style.showErrors ? 0 : _issueColumnWidth) - (style.showFoldingHandles ? 0 : _foldingColumnWidth);
 
     final issueColumnWidth = style.showErrors ? _issueColumnWidth : 0.0;
-    final foldingColumnWidth =
-        style.showFoldingHandles ? _foldingColumnWidth : 0.0;
+    final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
 
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
@@ -68,14 +67,17 @@ class GutterWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
       width: style.showLineNumbers ? gutterWidth : null,
-      child: Table(
-        columnWidths: {
-          _lineNumberColumn: const FlexColumnWidth(),
-          _issueColumn: FixedColumnWidth(issueColumnWidth),
-          _foldingColumn: FixedColumnWidth(foldingColumnWidth),
-        },
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        children: tableRows,
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: Table(
+          columnWidths: {
+            _lineNumberColumn: const FlexColumnWidth(),
+            _issueColumn: FixedColumnWidth(issueColumnWidth),
+            _foldingColumn: FixedColumnWidth(foldingColumnWidth),
+          },
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          children: tableRows,
+        ),
       ),
     );
   }
@@ -110,8 +112,7 @@ class GutterWidget extends StatelessWidget {
       }
       tableRows[lineIndex].children![_issueColumn] = GutterErrorWidget(
         issue,
-        style.errorPopupTextStyle ??
-            (throw Exception('Error popup style should never be null')),
+        style.errorPopupTextStyle ?? (throw Exception('Error popup style should never be null')),
       );
     }
   }
@@ -130,9 +131,7 @@ class GutterWidget extends StatelessWidget {
       tableRows[lineIndex].children![_foldingColumn] = FoldToggle(
         color: style.textStyle?.color,
         isFolded: isFolded,
-        onTap: isFolded
-            ? () => codeController.unfoldAt(block.firstLine)
-            : () => codeController.foldAt(block.firstLine),
+        onTap: isFolded ? () => codeController.unfoldAt(block.firstLine) : () => codeController.foldAt(block.firstLine),
       );
     }
 
