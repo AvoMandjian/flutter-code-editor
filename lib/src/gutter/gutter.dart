@@ -37,7 +37,7 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = (style.characterWidth * codeController.code.lines.length.toString().length * 3) -
+    final gutterWidth = (style.gutterWidthMultiplier * codeController.code.lines.length.toString().length) -
         (style.showErrors ? 0 : _issueColumnWidth) -
         (style.showFoldingHandles ? 0 : _foldingColumnWidth);
 
