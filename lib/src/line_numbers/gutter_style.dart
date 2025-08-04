@@ -79,7 +79,7 @@ class GutterStyle {
         showErrors: showErrors,
         showFoldingHandles: showFoldingHandles,
         showLineNumbers: showLineNumbers,
-        maxWidth: maxWidth,
+        maxWidth: maxWidth ?? 80,
       );
 }
 
