@@ -37,7 +37,7 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = (style.characterWidth * codeController.code.lines.length.toString().length * 2) -
+    final gutterWidth = (style.characterWidth * codeController.code.lines.length.toString().length * 3) -
         (style.showErrors ? 0 : _issueColumnWidth) -
         (style.showFoldingHandles ? 0 : _foldingColumnWidth);
 
@@ -69,7 +69,7 @@ class GutterWidget extends StatelessWidget {
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
       width: style.showLineNumbers ? gutterWidth : null,
-      constraints: BoxConstraints(maxWidth: style.maxWidth?? double.infinity),
+      constraints: BoxConstraints(maxWidth: style.maxWidth ?? double.infinity),
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
