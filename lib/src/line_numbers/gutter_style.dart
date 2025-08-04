@@ -35,6 +35,9 @@ class GutterStyle {
   /// Whether to show folding handles column.
   final bool showFoldingHandles;
 
+  /// Maximum width of the gutter.
+  final double? maxWidth;
+
   /// Whether there is any column to show in gutter.
   bool get showGutter => showLineNumbers || showErrors || showFoldingHandles;
 
@@ -48,6 +51,7 @@ class GutterStyle {
     this.background,
     this.errorPopupTextStyle,
     this.textStyle,
+    this.maxWidth,
   });
 
   /// Hides the gutter entirely.
@@ -63,6 +67,7 @@ class GutterStyle {
   GutterStyle copyWith({
     TextStyle? errorPopupTextStyle,
     TextStyle? textStyle,
+    double? maxWidth,
   }) =>
       GutterStyle(
         characterWidth: characterWidth,
@@ -74,6 +79,7 @@ class GutterStyle {
         showErrors: showErrors,
         showFoldingHandles: showFoldingHandles,
         showLineNumbers: showLineNumbers,
+        maxWidth: maxWidth,
       );
 }
 
