@@ -69,7 +69,6 @@ class GutterWidget extends StatelessWidget {
     }
 
     return Container(
-      color: Colors.red,
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
       width: style.showLineNumbers ? gutterWidth : null,
       constraints: BoxConstraints(maxWidth: style.maxWidth ?? double.infinity),
