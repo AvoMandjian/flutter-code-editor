@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class GutterStyle {
   /// Width of the line number column.
-  final double width;
+  final double characterWidth;
 
   /// Alignment of the numbers in the column.
   final TextAlign textAlign;
@@ -44,7 +44,7 @@ class GutterStyle {
     this.showErrors = true,
     this.showFoldingHandles = true,
     this.showLineNumbers = true,
-    this.width = 80.0,
+    this.characterWidth = 8,
     this.background,
     this.errorPopupTextStyle,
     this.textStyle,
@@ -65,7 +65,7 @@ class GutterStyle {
     TextStyle? textStyle,
   }) =>
       GutterStyle(
-        width: width,
+        characterWidth: characterWidth,
         textAlign: textAlign,
         textStyle: textStyle ?? this.textStyle,
         errorPopupTextStyle: errorPopupTextStyle,
