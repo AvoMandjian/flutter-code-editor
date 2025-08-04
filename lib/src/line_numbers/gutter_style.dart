@@ -36,7 +36,7 @@ class GutterStyle {
   final bool showFoldingHandles;
 
   /// Maximum width of the gutter.
-  final double? maxWidth;
+  final double maxWidth;
 
   /// Whether there is any column to show in gutter.
   bool get showGutter => showLineNumbers || showErrors || showFoldingHandles;
@@ -51,7 +51,7 @@ class GutterStyle {
     this.background,
     this.errorPopupTextStyle,
     this.textStyle,
-    this.maxWidth,
+    this.maxWidth = 80,
   });
 
   /// Hides the gutter entirely.

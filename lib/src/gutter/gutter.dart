@@ -37,12 +37,14 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = (style.gutterWidthMultiplier * codeController.code.lines.length.toString().length) -
+    final gutterWidth = (style.gutterWidthMultiplier *
+            codeController.code.lines.length.toString().length) -
         (style.showErrors ? 0 : _issueColumnWidth) -
         (style.showFoldingHandles ? 0 : _foldingColumnWidth);
 
     final issueColumnWidth = style.showErrors ? _issueColumnWidth : 0.0;
-    final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
+    final foldingColumnWidth =
+        style.showFoldingHandles ? _foldingColumnWidth : 0.0;
 
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
@@ -67,9 +69,11 @@ class GutterWidget extends StatelessWidget {
     }
 
     return Container(
+      color: Colors.red,
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
       width: style.showLineNumbers ? gutterWidth : null,
       constraints: BoxConstraints(maxWidth: style.maxWidth ?? double.infinity),
+      alignment: Alignment.topLeft,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
@@ -118,7 +122,8 @@ class GutterWidget extends StatelessWidget {
       }
       tableRows[lineIndex].children![_issueColumn] = GutterErrorWidget(
         issue,
-        style.errorPopupTextStyle ?? (throw Exception('Error popup style should never be null')),
+        style.errorPopupTextStyle ??
+            (throw Exception('Error popup style should never be null')),
       );
     }
   }
@@ -137,7 +142,9 @@ class GutterWidget extends StatelessWidget {
       tableRows[lineIndex].children![_foldingColumn] = FoldToggle(
         color: style.textStyle?.color,
         isFolded: isFolded,
-        onTap: isFolded ? () => codeController.unfoldAt(block.firstLine) : () => codeController.foldAt(block.firstLine),
+        onTap: isFolded
+            ? () => codeController.unfoldAt(block.firstLine)
+            : () => codeController.foldAt(block.firstLine),
       );
     }
 
