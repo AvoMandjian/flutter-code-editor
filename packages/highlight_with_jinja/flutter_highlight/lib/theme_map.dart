@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+import 'package:flutter/rendering.dart';
+
 import 'themes/a11y-dark.dart';
 import 'themes/a11y-light.dart';
 import 'themes/agate.dart';
@@ -91,7 +93,7 @@ import 'themes/xcode.dart';
 import 'themes/xt256.dart';
 import 'themes/zenburn.dart';
 
-const themeMap = {
+Map<String, Map<String, TextStyle>> themeMap = {
   'a11y-dark': a11yDarkTheme,
   'a11y-light': a11yLightTheme,
   'agate': agateTheme,

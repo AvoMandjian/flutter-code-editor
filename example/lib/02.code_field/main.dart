@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
-import 'package:flutter_highlight/themes/monokai-sublime.dart';
+import 'package:flutter_highlight/theme_map.dart';
 import 'package:highlight/languages/jinja.dart';
 
 void main() {
@@ -41,13 +41,143 @@ class CodeEditor extends StatelessWidget {
       language: jinja,
       subLanguage: 'xml',
     );
+
+    final Map<String, dynamic> customThemes = {
+      'custom_theme': {
+        'root': {
+          'backgroundColor': '0xffffffff',
+          'color': '0xff000000',
+        },
+        'comment': {
+          'color': '0xff008000',
+        },
+        'quote': {
+          'color': '0xff008000',
+        },
+        'variable': {
+          'color': '0xff008000',
+        },
+        'keyword': {
+          'color': '0xff0000ff',
+        },
+        'selector-tag': {
+          'color': '0xff0000ff',
+        },
+        'built_in': {
+          'color': '0xff0000ff',
+        },
+        'name': {
+          'color': '0xff0000ff',
+        },
+        'tag': {
+          'color': '0xff0000ff',
+        },
+        'string': {
+          'color': '0xffa31515',
+        },
+        'title': {
+          'color': '0xffa31515',
+        },
+        'section': {
+          'color': '0xffa31515',
+        },
+        'attribute': {
+          'color': '0xffa31515',
+        },
+        'literal': {
+          'color': '0xffa31515',
+        },
+        'template-tag': {
+          'color': '0xffa31515',
+        },
+        'template-variable': {
+          'color': '0xffa31515',
+        },
+        'type': {
+          'color': '0xffa31515',
+        },
+        'addition': {
+          'color': '0xffa31515',
+        },
+        'deletion': {
+          'color': '0xff2b91af',
+        },
+        'selector-attr': {
+          'color': '0xff2b91af',
+        },
+        'selector-pseudo': {
+          'color': '0xff2b91af',
+        },
+        'meta': {
+          'color': '0xff2b91af',
+        },
+        'doctag': {
+          'color': '0xff808080',
+        },
+        'attr': {
+          'color': '0xffff0000',
+        },
+        'symbol': {
+          'color': '0xff00b0e8',
+        },
+        'bullet': {
+          'color': '0xff00b0e8',
+        },
+        'link': {
+          'color': '0xff00b0e8',
+        },
+        'emphasis': {
+          'font_style': 'italic',
+        },
+        'strong': {
+          'font_weight': 'bold',
+        },
+        // Added missing keys from standard themes
+        'subst': {
+          'color': '0xff000000',
+        },
+        'selector-id': {
+          'color': '0xffa31515',
+        },
+        'selector-class': {
+          'color': '0xffa31515',
+        },
+        'regexp': {
+          'color': '0xff2b91af',
+        },
+        'meta-string': {
+          'color': '0xff2b91af',
+        },
+        'meta-keyword': {
+          'color': '0xff0000ff',
+          'font_weight': 'bold',
+        },
+        'builtin-name': {
+          'color': '0xff0000ff',
+        },
+        'params': {
+          'color': '0xffa31515',
+        },
+        'formula': {
+          'color': '0xff808080',
+        },
+        'code': {
+          'color': '0xff008000',
+        },
+        'number': {
+          'color': '0xffa31515',
+        },
+      },
+    };
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: CodeTheme(
-          data: CodeThemeData(styles: monokaiSublimeTheme),
+          data: CodeThemeData(styles: themeMap['custom_theme_light']),
           child: SingleChildScrollView(
             child: CodeField(
+              customThemes: customThemes,
               controller: controller,
               gutterStyle: const GutterStyle(
                 textStyle: TextStyle(
