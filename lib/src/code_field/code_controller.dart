@@ -103,7 +103,9 @@ class CodeController extends TextEditingController {
   Code _code;
 
   final _styleList = <TextStyle>[];
-  final _modifierMap = <String, CodeModifier>{};
+
+  /// expose it so that modifiers can be changed at runtime
+  final modifierMap = <String, CodeModifier>{};
   late PopupController popupController;
   late final autocompleter = Autocompleter(
     subLanguage: subLanguage,
@@ -186,7 +188,7 @@ class CodeController extends TextEditingController {
 
     // Create modifier map
     for (final el in modifiers) {
-      _modifierMap[el.char] = el;
+      modifierMap[el.char] = el;
     }
 
     // Build styleRegExp
@@ -462,7 +464,7 @@ class CodeController extends TextEditingController {
 
       if (loc != null) {
         final char = newValue.text[loc];
-        final modifier = _modifierMap[char];
+        final modifier = modifierMap[char];
         final val = modifier?.updateString(text, selection, params);
 
         if (val != null) {
