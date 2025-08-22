@@ -82,7 +82,7 @@ class CodeController extends TextEditingController {
 
   /// A list of code modifiers
   /// to dynamically update the code upon certain keystrokes.
-  List<CodeModifier> modifiers;
+  final List<CodeModifier> modifiers;
 
   final bool _isTabReplacementEnabled;
 
