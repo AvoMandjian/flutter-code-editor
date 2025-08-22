@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -250,7 +251,7 @@ class _CodeFieldState extends State<CodeField> {
     if (widget.customThemes != null) {
       for (final entry in widget.customThemes!.entries) {
         themeMap.addAll({
-          entry.key: getThemeById(entry.value),
+          entry.key: getThemeById(Map<String, Map<String, dynamic>>.from(jsonDecode(jsonEncode(entry.value)))),
         });
       }
     }
