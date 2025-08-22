@@ -182,7 +182,7 @@ class CodeField extends StatefulWidget {
 
   final GutterStyle gutterStyle;
 
-  final Map<String, dynamic> customThemes;
+  final Map<String, dynamic>? customThemes;
 
   const CodeField({
     super.key,
@@ -208,7 +208,7 @@ class CodeField extends StatefulWidget {
     this.onChanged,
     @Deprecated('Use gutterStyle instead') this.lineNumbers,
     @Deprecated('Use gutterStyle instead') this.lineNumberStyle = const GutterStyle(),
-    this.customThemes = const {},
+    this.customThemes,
   })  : assert(
             gutterStyle == null || lineNumbers == null,
             'Can not provide gutterStyle and lineNumbers at the same time. '
@@ -247,10 +247,12 @@ class _CodeFieldState extends State<CodeField> {
   @override
   void initState() {
     super.initState();
-    for (final entry in widget.customThemes.entries) {
-      themeMap.addAll({
-        entry.key: getThemeById(entry.value),
-      });
+    if (widget.customThemes != null) {
+      for (final entry in widget.customThemes!.entries) {
+        themeMap.addAll({
+          entry.key: getThemeById(entry.value),
+        });
+      }
     }
     _controllers = LinkedScrollControllerGroup();
     _numberScroll = _controllers?.addAndGet();
@@ -713,5 +715,19 @@ Map<String, TextStyle> getThemeById(Map<String, Map<String, dynamic>> customThem
     'link': TextStyle(color: Color(int.parse(customThemes['link']?['color'] ?? '0xff00b0e8'))),
     'emphasis': TextStyle(fontStyle: getFontStyle(customThemes['emphasis']?['font_style'] ?? 'italic')),
     'strong': TextStyle(fontWeight: getFontWeight(customThemes['strong']?['font_weight'] ?? 'bold')),
+    'subst': TextStyle(color: Color(int.parse(customThemes['subst']?['color'] ?? '0xff000000'))),
+    'selector-id': TextStyle(color: Color(int.parse(customThemes['selector-id']?['color'] ?? '0xffa31515'))),
+    'selector-class': TextStyle(color: Color(int.parse(customThemes['selector-class']?['color'] ?? '0xffa31515'))),
+    'regexp': TextStyle(color: Color(int.parse(customThemes['regexp']?['color'] ?? '0xff2b91af'))),
+    'meta-string': TextStyle(color: Color(int.parse(customThemes['meta-string']?['color'] ?? '0xff2b91af'))),
+    'meta-keyword': TextStyle(
+      color: Color(int.parse(customThemes['meta-keyword']?['color'] ?? '0xff0000ff')),
+      fontWeight: getFontWeight(customThemes['meta-keyword']?['font_weight'] ?? 'bold'),
+    ),
+    'builtin-name': TextStyle(color: Color(int.parse(customThemes['builtin-name']?['color'] ?? '0xff0000ff'))),
+    'params': TextStyle(color: Color(int.parse(customThemes['params']?['color'] ?? '0xffa31515'))),
+    'formula': TextStyle(color: Color(int.parse(customThemes['formula']?['color'] ?? '0xff808080'))),
+    'code': TextStyle(color: Color(int.parse(customThemes['code']?['color'] ?? '0xff008000'))),
+    'number': TextStyle(color: Color(int.parse(customThemes['number']?['color'] ?? '0xffa31515'))),
   };
 }
