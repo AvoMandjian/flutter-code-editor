@@ -35,11 +35,18 @@ class GutterStyle {
   /// Whether to show folding handles column.
   final bool showFoldingHandles;
 
+  /// Whether to show breakpoints column.
+  final bool showBreakpoints;
+
+  /// The color of the breakpoint icon.
+  final Color breakpointColor;
+
   /// Maximum width of the gutter.
   final double maxWidth;
 
   /// Whether there is any column to show in gutter.
-  bool get showGutter => showLineNumbers || showErrors || showFoldingHandles;
+  bool get showGutter =>
+      showLineNumbers || showErrors || showFoldingHandles || showBreakpoints;
 
   const GutterStyle({
     this.margin = 10.0,
@@ -47,6 +54,8 @@ class GutterStyle {
     this.showErrors = true,
     this.showFoldingHandles = true,
     this.showLineNumbers = true,
+    this.showBreakpoints = false,
+    this.breakpointColor = Colors.red,
     this.gutterWidthMultiplier = 32,
     this.background,
     this.errorPopupTextStyle,
@@ -62,12 +71,15 @@ class GutterStyle {
     showErrors: false,
     showFoldingHandles: false,
     showLineNumbers: false,
+    showBreakpoints: false,
   );
 
   GutterStyle copyWith({
     TextStyle? errorPopupTextStyle,
     TextStyle? textStyle,
     double? maxWidth,
+    bool? showBreakpoints,
+    Color? breakpointColor,
   }) =>
       GutterStyle(
         gutterWidthMultiplier: gutterWidthMultiplier,
@@ -79,6 +91,8 @@ class GutterStyle {
         showErrors: showErrors,
         showFoldingHandles: showFoldingHandles,
         showLineNumbers: showLineNumbers,
+        showBreakpoints: showBreakpoints ?? this.showBreakpoints,
+        breakpointColor: breakpointColor ?? this.breakpointColor,
         maxWidth: maxWidth ?? 80,
       );
 }

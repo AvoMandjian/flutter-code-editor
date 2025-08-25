@@ -11,13 +11,21 @@ void main() {
   runApp(const CodeEditor());
 }
 
-class CodeEditor extends StatelessWidget {
+class CodeEditor extends StatefulWidget {
   const CodeEditor({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    //controller.visibleSectionNames = {'section1'};
-    final controller = CodeController(
+  State<CodeEditor> createState() => _CodeEditorState();
+}
+
+class _CodeEditorState extends State<CodeEditor> {
+  CodeController? _codeController;
+  Set<int> _breakpoints = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _codeController = CodeController(
       text: '''
 <!DOCTYPE html>
 <html lang="en">
@@ -40,8 +48,22 @@ class CodeEditor extends StatelessWidget {
 ''',
       language: jinja,
       subLanguage: 'xml',
+      onBreakpointsChanged: (breakpoints) {
+        setState(() {
+          _breakpoints = breakpoints;
+        });
+      },
     );
+  }
 
+  @override
+  void dispose() {
+    _codeController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final Map<String, dynamic> customThemes = {
       'custom_theme': {
         'root': {
@@ -169,22 +191,34 @@ class CodeEditor extends StatelessWidget {
         },
       },
     };
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: CodeTheme(
           data: CodeThemeData(styles: themeMap['custom_theme_light']),
-          child: SingleChildScrollView(
-            child: CodeField(
-              customThemes: customThemes,
-              controller: controller,
-              gutterStyle: const GutterStyle(
-                textStyle: TextStyle(
-                  height: 1.5,
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: CodeField(
+                    customThemes: customThemes,
+                    controller: _codeController!,
+                    gutterStyle: const GutterStyle(
+                      // textStyle: TextStyle(
+                      //   // height: 1.5,
+                      // ),
+                      showBreakpoints: true,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              if (_breakpoints.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.grey.shade200,
+                  child: Text('Breakpoints: ${_breakpoints.join(', ')}'),
+                ),
+            ],
           ),
         ),
       ),

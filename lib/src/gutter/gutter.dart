@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 
 import '../code_field/code_controller.dart';
 import '../line_numbers/gutter_style.dart';
+import 'breakpoint.dart';
 import 'error.dart';
 import 'fold_toggle.dart';
 
 const _issueColumnWidth = 16.0;
 const _foldingColumnWidth = 16.0;
+const _breakpointColumnWidth = 16.0;
 
-const _lineNumberColumn = 0;
-const _issueColumn = 1;
-const _foldingColumn = 2;
+const _breakpointColumn = 0;
+const _lineNumberColumn = 1;
+const _issueColumn = 2;
+const _foldingColumn = 3;
 
 class GutterWidget extends StatelessWidget {
   const GutterWidget({
@@ -37,14 +40,14 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = (style.gutterWidthMultiplier *
-            codeController.code.lines.length.toString().length) -
+    final gutterWidth = (style.gutterWidthMultiplier * codeController.code.lines.length.toString().length) -
         (style.showErrors ? 0 : _issueColumnWidth) -
-        (style.showFoldingHandles ? 0 : _foldingColumnWidth);
+        (style.showFoldingHandles ? 0 : _foldingColumnWidth) -
+        (style.showBreakpoints ? 0 : _breakpointColumnWidth);
 
     final issueColumnWidth = style.showErrors ? _issueColumnWidth : 0.0;
-    final foldingColumnWidth =
-        style.showFoldingHandles ? _foldingColumnWidth : 0.0;
+    final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
+    final breakpointColumnWidth = style.showBreakpoints ? _breakpointColumnWidth : 0.0;
 
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
@@ -55,9 +58,14 @@ class GutterWidget extends StatelessWidget {
           const SizedBox(),
           const SizedBox(),
           const SizedBox(),
+          const SizedBox(),
         ],
       ),
     );
+
+    if (style.showBreakpoints) {
+      _fillBreakpoints(tableRows);
+    }
 
     _fillLineNumbers(tableRows);
 
@@ -79,6 +87,7 @@ class GutterWidget extends StatelessWidget {
           controller: scrollController,
           child: Table(
             columnWidths: {
+              _breakpointColumn: FixedColumnWidth(breakpointColumnWidth),
               _lineNumberColumn: const FlexColumnWidth(),
               _issueColumn: FixedColumnWidth(issueColumnWidth),
               _foldingColumn: FixedColumnWidth(foldingColumnWidth),
@@ -121,8 +130,7 @@ class GutterWidget extends StatelessWidget {
       }
       tableRows[lineIndex].children![_issueColumn] = GutterErrorWidget(
         issue,
-        style.errorPopupTextStyle ??
-            (throw Exception('Error popup style should never be null')),
+        style.errorPopupTextStyle ?? (throw Exception('Error popup style should never be null')),
       );
     }
   }
@@ -141,9 +149,7 @@ class GutterWidget extends StatelessWidget {
       tableRows[lineIndex].children![_foldingColumn] = FoldToggle(
         color: style.textStyle?.color,
         isFolded: isFolded,
-        onTap: isFolded
-            ? () => codeController.unfoldAt(block.firstLine)
-            : () => codeController.foldAt(block.firstLine),
+        onTap: isFolded ? () => codeController.unfoldAt(block.firstLine) : () => codeController.foldAt(block.firstLine),
       );
     }
 
@@ -159,6 +165,24 @@ class GutterWidget extends StatelessWidget {
         color: style.textStyle?.color,
         isFolded: true,
         onTap: () => codeController.unfoldAt(block.firstLine),
+      );
+    }
+  }
+
+  void _fillBreakpoints(List<TableRow> tableRows) {
+    final code = codeController.code;
+
+    for (final i in code.hiddenLineRanges.visibleLineNumbers) {
+      final lineIndex = _lineIndexToTableRowIndex(i);
+
+      if (lineIndex == null) {
+        continue;
+      }
+
+      tableRows[lineIndex].children![_breakpointColumn] = BreakpointWidget(
+        line: i + 1,
+        controller: codeController,
+        color: style.breakpointColor,
       );
     }
   }

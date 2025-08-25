@@ -84,6 +84,8 @@ class CodeController extends TextEditingController {
   /// to dynamically update the code upon certain keystrokes.
   final List<CodeModifier> modifiers;
 
+  final void Function(Set<int> breakpoints)? onBreakpointsChanged;
+
   final bool _isTabReplacementEnabled;
 
   /* Computed members */
@@ -114,6 +116,8 @@ class CodeController extends TextEditingController {
 
   @internal
   late final searchController = CodeSearchController(codeController: this);
+
+  final breakpoints = <int>{};
 
   SearchSettingsController get _searchSettingsController => searchController.settingsController;
 
@@ -170,6 +174,7 @@ class CodeController extends TextEditingController {
     this.readOnly = false,
     this.params = const EditorParams(),
     this.modifiers = defaultCodeModifiers,
+    this.onBreakpointsChanged,
   })  : _analyzer = analyzer,
         _readOnlySectionNames = readOnlySectionNames,
         _code = Code.empty,
@@ -844,6 +849,16 @@ class CodeController extends TextEditingController {
     super.value = _getValueWithCode(newCode);
 
     _code = newCode;
+  }
+
+  void toggleBreakpoint(int line) {
+    if (breakpoints.contains(line)) {
+      breakpoints.remove(line);
+    } else {
+      breakpoints.add(line);
+    }
+    onBreakpointsChanged?.call(breakpoints);
+    notifyListeners();
   }
 
   Set<String> get readOnlySectionNames => _readOnlySectionNames;

@@ -166,6 +166,9 @@ class CodeField extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.onChanged}
   final void Function(String)? onChanged;
 
+  /// A callback that is called when the user toggles a breakpoint.
+  final void Function(Set<int>)? onBreakpointsChanged;
+
   /// {@macro flutter.widgets.editableText.readOnly}
   ///
   /// This is just passed as a parameter to a [TextField].
@@ -207,13 +210,14 @@ class CodeField extends StatefulWidget {
     this.lineNumberBuilder,
     this.focusNode,
     this.onChanged,
+    this.onBreakpointsChanged,
     @Deprecated('Use gutterStyle instead') this.lineNumbers,
     @Deprecated('Use gutterStyle instead') this.lineNumberStyle = const GutterStyle(),
     this.customThemes,
   })  : assert(
-            gutterStyle == null || lineNumbers == null,
-            'Can not provide gutterStyle and lineNumbers at the same time. '
-            'Please use gutterStyle and provide necessary columns to show/hide'),
+             gutterStyle == null || lineNumbers == null,
+             'Can not provide gutterStyle and lineNumbers at the same time. '
+             'Please use gutterStyle and provide necessary columns to show/hide'),
         gutterStyle = gutterStyle ?? ((lineNumbers == false) ? GutterStyle.none : lineNumberStyle);
 
   @override
