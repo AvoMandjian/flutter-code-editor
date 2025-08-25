@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_code_editor/src/code_field/code_controller.dart';
+import '../code_field/code_controller.dart';
 
 const _breakpointRadius = 4.0;
 
@@ -31,13 +31,17 @@ class _BreakpointWidgetState extends State<BreakpointWidget> {
       onExit: (_) => setState(() => _hovered = false),
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () => widget.controller.toggleBreakpoint(widget.line),
-        child: Container(
-          width: _breakpointRadius * 2,
-          height: _breakpointRadius * 2,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: _hovered || isBreakpoint ? widget.color.withOpacity(isBreakpoint ? 1.0 : 0.5) : Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: _breakpointRadius * 2),
+          child: Container(
+            width: _breakpointRadius * 2,
+            height: _breakpointRadius * 2,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _hovered || isBreakpoint ? widget.color.withOpacity(isBreakpoint ? 1.0 : 0.5) : Colors.transparent,
+            ),
           ),
         ),
       ),
