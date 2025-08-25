@@ -204,9 +204,7 @@ class _CodeEditorState extends State<CodeEditor> {
                     customThemes: customThemes,
                     controller: _codeController!,
                     gutterStyle: const GutterStyle(
-                      // textStyle: TextStyle(
-                      //   // height: 1.5,
-                      // ),
+                      gutterWidthMultiplier: 200,
                       showBreakpoints: true,
                     ),
                   ),
