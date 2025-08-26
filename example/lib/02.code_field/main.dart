@@ -33,15 +33,125 @@ class _CodeEditorState extends State<CodeEditor> {
     'subcategory_title_2': 'Su 2',
     'subcategory_title_3': 'Su 3',
     'subcategory_title_4': 'Su 4',
+    'dealership': {'name': 'Dealership', 'address': '123 Main St'},
   };
   final env = Environment();
   var templateSource = '''
-<p>First Script</p><p>{{subcategory_title}}</p>
-<p>Second Script</p><p>{{subcategory_title_2}}</p>
-<p>Third Script</p><p>{{subcategory_title_3}}</p>
-<p>Fourth Script</p><p>{{subcategory_title_4}}</p>
+{% set dealership = dealership %}
+{% set dealershipName = dealership.name %}
+{% set dealershipAddress = dealership.address %}
+{{dealershipName}}
+{{dealershipAddress}}
 ''';
+  var templateSourceDebug = '''
+<div style="
+  font-family: 'SF Mono', 'Roboto Mono', monospace;
+  background: #1e1e1e;
+  color: #dcdcdc;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  overflow-x: auto;
+  border: 1px solid #2d2d2d;
+  margin: auto;
+">
+  <style>
+    .debug-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #9cdcfe;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #333;
+    }
+    .debug-panel {
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .debug-panel th, .debug-panel td {
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid #333;
+      vertical-align: top;
+      word-break: break-word;
+    }
+    .debug-panel th {
+      color: #9cdcfe;
+      font-weight: 600;
+      background: #252526;
+      border-right: 1px solid #333;
+    }
+    .debug-panel tr:hover {
+      background: #2a2d2e;
+    }
+    .debug-panel tr:last-child td {
+      border-bottom: none;
+    }
+    .debug-panel pre {
+      margin: 0;
+      padding: 8px 10px;
+      background: #252526;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.4;
+      overflow-x: auto;
+    }
+    .debug-panel .json-value {
+      color: #ce9178;
+    }
+    .debug-panel .json-key {
+      color: #9cdcfe;
+    }
+  </style>
+
+  <!-- Title -->
+  <div class="debug-title">
+    Debug – Line {{lineNumber}}
+  </div>
+
+  <table class="debug-panel">
+    <tr>
+      <th>Node Type:</th>
+      <td><span class="json-value">{{nodeType}}</span></td>
+    </tr>
+    <tr>
+      <th>Node Name:</th>
+      <td><span class="json-value">{{nodeName}}</span></td>
+    </tr>
+    <tr>
+      <th>Line Number:</th>
+      <td><span class="json-value">{{lineNumber}}</span></td>
+    </tr>
+    <tr>
+      <th>Output So Far:</th>
+      <td>{{outputSoFar}}</td>
+    </tr>
+    <tr>
+      <th>Node Data:</th>
+      <td>{{nodeData}}</td>
+    </tr>
+    <tr>
+      <td>
+      <br>
+        <table>
+          <tr>
+            <th>Variables:</th>
+          </tr>
+          {% for key, value in variables %}
+            <tr>
+              <th>{{key}} ----> </th>
+              <td>{{value}}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>''';
   late final Template templateOfJinja = env.fromString(templateSource);
+  late final Template templateOfDebug = env.fromString(templateSourceDebug);
   final Map<String, dynamic> customThemes = {
     'custom_theme': {
       'root': {
@@ -169,7 +279,8 @@ class _CodeEditorState extends State<CodeEditor> {
       },
     },
   };
-  final ValueNotifier<String?> valueNotifierResult = ValueNotifier(null);
+  final ValueNotifier<String?> valueNotifierResultJinja = ValueNotifier(null);
+  final ValueNotifier<String?> valueNotifierResultDebug = ValueNotifier(null);
   final debugController = DebugController()..enabled = true;
 
   @override
@@ -216,15 +327,16 @@ class _CodeEditorState extends State<CodeEditor> {
                     'nodeData': info.nodeData.toString(),
                   };
                   breakpointsInfo.value = Map.from(breakpointsInfo.value);
+
                   return DebugAction.continueExecution;
                 };
 
                 // run jinja script here
-                valueNotifierResult.value = await templateOfJinja.renderDebug(
+                valueNotifierResultJinja.value = await templateOfJinja.renderDebug(
                   data: dataToPassToJinja,
                   debugController: debugController,
                 );
-                valueNotifierResult.value = '${valueNotifierResult.value}\n${DateTime.now()}';
+                valueNotifierResultJinja.value = '${valueNotifierResultJinja.value}\n${DateTime.now()}';
               },
             ),
           ],
@@ -234,7 +346,7 @@ class _CodeEditorState extends State<CodeEditor> {
           child: Column(
             children: [
               ValueListenableBuilder<String?>(
-                valueListenable: valueNotifierResult,
+                valueListenable: valueNotifierResultJinja,
                 builder: (context, value, child) {
                   if (value == null) {
                     return const SizedBox.shrink();
@@ -251,103 +363,19 @@ class _CodeEditorState extends State<CodeEditor> {
                   return SingleChildScrollView(
                     child: Column(
                       children: value.entries.map((e) {
+                        valueNotifierResultDebug.value = templateOfDebug.render(
+                          e.value,
+                        );
+
                         return Padding(
                           padding: const EdgeInsets.all(8),
-                          child: HtmlWidget(
-                            '''<div style="
-  font-family: 'SF Mono', 'Roboto Mono', monospace;
-  background: #1e1e1e;
-  color: #dcdcdc;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-  overflow-x: auto;
-  border: 1px solid #2d2d2d;
-  margin: auto;
-">
-  <style>
-    .debug-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #9cdcfe;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #333;
-    }
-    .debug-panel {
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    .debug-panel th, .debug-panel td {
-      text-align: left;
-      padding: 10px 14px;
-      border-bottom: 1px solid #333;
-      vertical-align: top;
-      word-break: break-word;
-    }
-    .debug-panel th {
-      color: #9cdcfe;
-      font-weight: 600;
-      background: #252526;
-      border-right: 1px solid #333;
-    }
-    .debug-panel tr:hover {
-      background: #2a2d2e;
-    }
-    .debug-panel tr:last-child td {
-      border-bottom: none;
-    }
-    .debug-panel pre {
-      margin: 0;
-      padding: 8px 10px;
-      background: #252526;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      font-family: inherit;
-      font-size: 13px;
-      line-height: 1.4;
-      overflow-x: auto;
-    }
-    .debug-panel .json-value {
-      color: #ce9178;
-    }
-    .debug-panel .json-key {
-      color: #9cdcfe;
-    }
-  </style>
-
-  <!-- Title -->
-  <div class="debug-title">
-    Debug – Line ${e.value['lineNumber']}
-  </div>
-
-  <table class="debug-panel">
-    <tr>
-      <th>Node Type:</th>
-      <td><span class="json-value">${e.value['nodeType']}</span></td>
-    </tr>
-    <tr>
-      <th>Node Name:</th>
-      <td><span class="json-value">${e.value['nodeName']}</span></td>
-    </tr>
-    <tr>
-      <th>Line Number:</th>
-      <td><span class="json-value">${e.value['lineNumber']}</span></td>
-    </tr>
-    <tr>
-      <th>Output So Far:</th>
-      <td>${e.value['outputSoFar']}</td>
-    </tr>
-    <tr>
-      <th>Node Data:</th>
-      <td>${e.value['nodeData']}</td>
-    </tr>
-    <tr>
-      <th>Variables:</th>
-      <td>${e.value['variables']}</td>
-    </tr>
-  </table>
-</div>''',
+                          child: ValueListenableBuilder<String?>(
+                            valueListenable: valueNotifierResultDebug,
+                            builder: (context, value, child) {
+                              return HtmlWidget(
+                                value ?? '',
+                              );
+                            },
                           ),
                         );
                       }).toList(),
