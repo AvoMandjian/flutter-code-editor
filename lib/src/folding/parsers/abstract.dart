@@ -96,7 +96,7 @@ abstract class AbstractFoldableBlockParser {
   void endImportSequenceIfAny(int lineIndex) {
     // We can have many possibleImport lines that add to the block range,
     // but at least one true import line is required for the block.
-    bool importFound = false;
+    var importFound = false;
     int? first; // Min line index of the block.
     int? last; // Max line index of the block.
 
@@ -115,7 +115,7 @@ abstract class AbstractFoldableBlockParser {
       );
     }
 
-    int i = lineIndex;
+    var i = lineIndex;
 
     for (final line in _linesWithSemantics.reversed) {
       if (line.index != --i) {
@@ -181,7 +181,7 @@ abstract class AbstractFoldableBlockParser {
       );
     }
 
-    int i = lineIndex;
+    var i = lineIndex;
 
     for (final line in _linesWithSemantics.reversed) {
       if (line.index != --i) {

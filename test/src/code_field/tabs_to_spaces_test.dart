@@ -111,7 +111,7 @@ void main() {
 
     group('Code with tabs', () {
       test('without selection', () {
-        TextEditingValue value = const TextEditingValue(text: _codeWithTabs);
+        var value = const TextEditingValue(text: _codeWithTabs);
         const expected = TextEditingValue(text: _codeWithDoubleSpaces);
 
         value = value.tabsToSpaces(_spaceCount);
@@ -120,7 +120,7 @@ void main() {
       });
 
       test('with cursor at the start', () {
-        TextEditingValue value = const TextEditingValue(
+        var value = const TextEditingValue(
           text: _codeWithTabs,
           selection: TextSelection.collapsed(offset: 0),
         );
@@ -133,7 +133,7 @@ void main() {
 
       test('with cursor at the middle', () {
         const cursorPosition = 31;
-        TextEditingValue value = const TextEditingValue(
+        var value = const TextEditingValue(
           text: _codeWithTabs,
           selection: TextSelection.collapsed(offset: cursorPosition),
         );
@@ -149,7 +149,7 @@ void main() {
 
       test('with cursor at the end', () {
         const cursorPosition = _codeWithTabs.length;
-        TextEditingValue value = const TextEditingValue(
+        var value = const TextEditingValue(
           text: _codeWithTabs,
           selection: TextSelection.collapsed(
             offset: cursorPosition,
@@ -171,7 +171,7 @@ void main() {
       });
 
       test('with non-empty normalized selection', () {
-        TextEditingValue value = const TextEditingValue(
+        var value = const TextEditingValue(
           text: _codeWithTabs,
           selection: TextSelection(
             baseOffset: 24,
@@ -190,7 +190,7 @@ void main() {
       });
 
       test('with non-empty reversed selection', () {
-        TextEditingValue value = const TextEditingValue(
+        var value = const TextEditingValue(
           text: _codeWithTabs,
           selection: TextSelection(
             baseOffset: 55,

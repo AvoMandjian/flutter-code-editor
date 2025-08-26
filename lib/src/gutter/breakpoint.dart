@@ -21,7 +21,7 @@ class BreakpointWidget extends StatefulWidget {
 }
 
 class _BreakpointWidgetState extends State<BreakpointWidget> {
-  bool _hovered = false;
+  var _hovered = false;
 
   @override
   Widget build(BuildContext context) {

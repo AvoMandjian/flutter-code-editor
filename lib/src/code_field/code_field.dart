@@ -215,9 +215,9 @@ class CodeField extends StatefulWidget {
     @Deprecated('Use gutterStyle instead') this.lineNumberStyle = const GutterStyle(),
     this.customThemes,
   })  : assert(
-             gutterStyle == null || lineNumbers == null,
-             'Can not provide gutterStyle and lineNumbers at the same time. '
-             'Please use gutterStyle and provide necessary columns to show/hide'),
+            gutterStyle == null || lineNumbers == null,
+            'Can not provide gutterStyle and lineNumbers at the same time. '
+            'Please use gutterStyle and provide necessary columns to show/hide'),
         gutterStyle = gutterStyle ?? ((lineNumbers == false) ? GutterStyle.none : lineNumberStyle);
 
   @override
@@ -241,7 +241,7 @@ class _CodeFieldState extends State<CodeField> {
 
   FocusNode? _focusNode;
   String? lines;
-  String longestLine = '';
+  var longestLine = '';
   Size? windowSize;
   late TextStyle textStyle;
   Color? _backgroundCol;

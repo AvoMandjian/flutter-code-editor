@@ -1,5 +1,4 @@
 // ignore_for_file: avoid_redundant_argument_values
-// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_code_editor/src/code_field/text_selection.dart';

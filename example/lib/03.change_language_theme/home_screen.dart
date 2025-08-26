@@ -27,9 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String _theme = _defaultTheme;
   AbstractAnalyzer _analyzer = _defaultAnalyzer;
 
-  bool _showNumbers = true;
-  bool _showErrors = true;
-  bool _showFoldingHandles = true;
+  var _showNumbers = true;
+  var _showErrors = true;
+  var _showFoldingHandles = true;
 
   final _codeFieldFocusNode = FocusNode();
   late final _codeController = CodeController(

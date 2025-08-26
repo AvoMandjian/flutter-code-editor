@@ -10,9 +10,9 @@ class CodeLinesBuilder {
   }) {
     final result = <CodeLine>[];
     final lines = _splitText(text);
-    int charIndex = 0;
+    var charIndex = 0;
 
-    for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    for (var lineIndex = 0; lineIndex < lines.length; lineIndex++) {
       final line = lines[lineIndex];
       final isReadOnly = _isLineReadonly(
         containsReadonlyComment: readonlyCommentsByLine[lineIndex],

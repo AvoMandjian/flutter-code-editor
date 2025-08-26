@@ -11,7 +11,7 @@ class SpanBuilder {
   final CodeThemeData? theme;
   final TextStyle? rootStyle;
 
-  int _visibleLineIndex = 0;
+  var _visibleLineIndex = 0;
 
   SpanBuilder({
     required this.code,

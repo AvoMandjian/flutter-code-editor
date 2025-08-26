@@ -8,7 +8,7 @@ import 'example_map.dart';
 
 void main() => runApp(MyApp());
 
-final title = 'Flutter Highlight Gallery';
+const title = 'Flutter Highlight Gallery';
 
 class MyApp extends StatelessWidget {
   @override
@@ -23,16 +23,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String language = 'dart';
-  String theme = 'a11y-dark';
+  var language = 'dart';
+  var theme = 'a11y-dark';
 
   Widget _buildMenuContent(String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Row(
         children: <Widget>[
-          Text(text, style: TextStyle(fontSize: 16)),
-          Icon(Icons.arrow_drop_down),
+          Text(text, style: const TextStyle(fontSize: 16)),
+          const Icon(Icons.arrow_drop_down),
         ],
       ),
     );
@@ -42,13 +42,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: const Text(title),
         actions: <Widget>[
           PopupMenuButton(
             child: _buildMenuContent(language),
             itemBuilder: (context) {
               return exampleMap.keys.map((key) {
-                return CheckedPopupMenuItem(value: key, child: Text(key), checked: language == key);
+                return CheckedPopupMenuItem(value: key, checked: language == key, child: Text(key));
               }).toList();
             },
             onSelected: (selected) {
@@ -61,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: _buildMenuContent(theme),
             itemBuilder: (context) {
               return themeMap.keys.map((key) {
-                return CheckedPopupMenuItem(value: key, child: Text(key), checked: theme == key);
+                return CheckedPopupMenuItem(value: key, checked: theme == key, child: Text(key));
               }).toList();
             },
             onSelected: (selected) {
@@ -87,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
               exampleMap[language]!,
               language: language,
               theme: themeMap[theme]!,
-              padding: EdgeInsets.all(12),
-              textStyle: TextStyle(fontFamily: 'SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace'),
+              padding: const EdgeInsets.all(12),
+              textStyle: const TextStyle(fontFamily: 'SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace'),
             ),
           ],
         ),

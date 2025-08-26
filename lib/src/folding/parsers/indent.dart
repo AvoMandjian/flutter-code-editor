@@ -40,7 +40,7 @@ class IndentFoldableBlockParser extends AbstractFoldableBlockParser {
 
   List<int?> _calculateLinesIndents(List<CodeLine> lines) {
     final result = List<int?>.filled(lines.length, 0);
-    for (int i = 0; i < lines.length; i++) {
+    for (var i = 0; i < lines.length; i++) {
       final line = lines[i];
       final isSeparatorLine = line.indent == line.text.length;
       result[i] = isSeparatorLine ? null : line.indent;
@@ -144,7 +144,7 @@ class _SignificantIndentIndexes {
     List<int?> indents, {
     int startIndex = 0,
   }) {
-    for (int i = startIndex; i < indents.length; i++) {
+    for (var i = startIndex; i < indents.length; i++) {
       if (!_isSeparatorLine(indents[i])) {
         return i;
       }

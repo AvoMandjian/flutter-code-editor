@@ -1,4 +1,3 @@
-// ignore_for_file: use_named_constants
 
 import 'package:flutter_code_editor/src/code/code_lines.dart';
 import 'package:flutter_code_editor/src/code/code_lines_builder.dart';

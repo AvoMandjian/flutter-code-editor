@@ -48,7 +48,7 @@ void main() {
       });
 
       test('No breakpoints -> Continuous', () {
-        for (int i = 0; i < noBreakpointsRanges.fullLineCount; i++) {
+        for (var i = 0; i < noBreakpointsRanges.fullLineCount; i++) {
           expect(noBreakpointsRanges.cutLineIndexIfVisible(i), i);
           expect(noBreakpointsRanges.recoverLineIndex(i), i);
         }

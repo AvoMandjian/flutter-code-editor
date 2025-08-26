@@ -28,7 +28,7 @@ class SearchNavigationController extends ValueNotifier<SearchNavigationState> {
 
   SearchResult _lastFullSearchResult = SearchResult.empty;
   String _lastText;
-  bool _wasEdited = false;
+  var _wasEdited = false;
 
   FocusNode? codeFieldFocusNode;
 

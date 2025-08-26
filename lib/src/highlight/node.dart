@@ -58,7 +58,7 @@ extension MyNode on Node {
       return [copyWith(children: children?.splitLines())];
     }
     final result = <Node>[];
-    for (int i = 0; i < splitValue.length; i++) {
+    for (var i = 0; i < splitValue.length; i++) {
       result.add(
         copyWith(
           value: splitValue[i] + (i == splitValue.length - 1 ? '' : '\n'),

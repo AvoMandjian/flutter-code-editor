@@ -29,8 +29,8 @@ class CodeHistoryController {
   final CodeController codeController;
   Code lastCode;
   TextSelection lastSelection;
-  int _currentRecordIndex = 0;
-  bool _wasTextChanged = false;
+  var _currentRecordIndex = 0;
+  var _wasTextChanged = false;
   Timer? _debounceTimer;
 
   @visibleForTesting
@@ -157,7 +157,7 @@ class CodeHistoryController {
   bool _isFullTextSame(List<CodeHistoryRecord> records) {
     final first = records.first;
 
-    for (int i = 1; i < records.length; i++) {
+    for (var i = 1; i < records.length; i++) {
       if (records[i].code.text != first.code.text) {
         return false;
       }

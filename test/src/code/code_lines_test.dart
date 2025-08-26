@@ -200,7 +200,7 @@ void main() {
       for (final text in texts) {
         final code = Code(text: text, language: _language);
 
-        for (int i = 0; i <= texts.length; i++) {
+        for (var i = 0; i <= texts.length; i++) {
           expect(
             code.lines.characterIndexToLineIndex(i),
             0,

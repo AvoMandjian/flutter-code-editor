@@ -34,8 +34,8 @@ class FoldableBlockMatcher {
     }
 
     var firstDiffLineIndex = 0;
-    int oldLinesIndex = 0;
-    int newLinesIndex = 0;
+    var oldLinesIndex = 0;
+    var newLinesIndex = 0;
 
     while (oldLinesIndex < oldLines.length && newLinesIndex < newLines.length) {
       if (oldLines[oldLinesIndex].text != newLines[newLinesIndex].text) {

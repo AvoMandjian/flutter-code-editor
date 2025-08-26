@@ -18,7 +18,7 @@ void main() {
     });
 
     void testCut(HiddenRanges hiddenRanges, Map<int, int> examples) {
-      int i = 0;
+      var i = 0;
 
       for (final example in examples.entries) {
         final input = example.key;
@@ -156,10 +156,10 @@ void main() {
 
         70: [124, 124], // After all ranges
       };
-      int i = 0;
+      var i = 0;
 
       for (final example in examples.entries) {
-        for (int affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
+        for (var affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
           final placeHiddenRanges = affinities[affinityIndex];
           final expected = example.value[affinityIndex];
 
@@ -192,10 +192,10 @@ void main() {
         5: [10, 5],
         6: [11, 11],
       };
-      int i = 0;
+      var i = 0;
 
       for (final example in examples.entries) {
-        for (int affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
+        for (var affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
           final input = example.key;
           final placeHiddenRanges = affinities[affinityIndex];
           final expected = example.value[affinityIndex];

@@ -27,7 +27,7 @@ class GutterErrorWidget extends StatefulWidget {
 
 class _GutterErrorWidgetState extends State<GutterErrorWidget> {
   OverlayEntry? _entry;
-  bool _mouseEnteredPopup = false;
+  var _mouseEnteredPopup = false;
 
   @override
   Widget build(BuildContext context) {

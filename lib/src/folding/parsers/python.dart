@@ -76,8 +76,8 @@ class PythonFoldableBlockParser extends AbstractFoldableBlockParser {
     required List<FoldableBlock> highlightBlocks,
     required List<FoldableBlock> indentBlocks,
   }) {
-    int highlightBlockIndex = 0;
-    int indentBlockIndex = 0;
+    var highlightBlockIndex = 0;
+    var indentBlockIndex = 0;
 
     final result = <FoldableBlock>[];
 
@@ -133,8 +133,8 @@ class PythonFoldableBlockParser extends AbstractFoldableBlockParser {
     required int line,
     required List<FoldableBlock> blocks,
   }) {
-    int result = 0;
-    for (int i = startIndex; i < blocks.length; i++) {
+    var result = 0;
+    for (var i = startIndex; i < blocks.length; i++) {
       final block = blocks[i];
       if (block.firstLine < line) {
         result++;

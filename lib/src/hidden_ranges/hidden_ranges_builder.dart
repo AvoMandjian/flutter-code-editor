@@ -46,7 +46,7 @@ class HiddenRangesBuilder {
   static List<HiddenRange> _merge(Iterable<HiddenRange> ranges) {
     final result = [...ranges]..sort(HiddenRange.sort);
 
-    for (int i = 1; i < result.length; i++) {
+    for (var i = 1; i < result.length; i++) {
       final current = result[i];
       final previous = result[i - 1];
 

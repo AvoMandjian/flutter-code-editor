@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:highlight/highlight.dart';
 import 'package:highlight/languages/java.dart';
 
-FocusNode focusNode = FocusNode();
+var focusNode = FocusNode();
 
 /// Passed controller will be disposed with the widget.
 MaterialApp createApp(CodeController controller, FocusNode focusNode) {

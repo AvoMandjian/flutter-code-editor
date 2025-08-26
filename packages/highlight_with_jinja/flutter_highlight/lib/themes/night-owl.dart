@@ -50,5 +50,5 @@ const nightOwlTheme = {
   'addition':
       TextStyle(color: Color(0xffaddb67ff), fontStyle: FontStyle.italic),
   'deletion':
-      TextStyle(color: Color(0xffEF535090), fontStyle: FontStyle.italic),
+      TextStyle(color: Color(0xffef535090), fontStyle: FontStyle.italic),
 };

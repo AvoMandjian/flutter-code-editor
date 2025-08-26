@@ -11,7 +11,7 @@ class HiddenLineRangesBuilder {
     required HiddenRanges hiddenRanges,
   }) {
     final breakpoints = <LineNumberingBreakpoint>[];
-    int spread = 0;
+    var spread = 0;
 
     for (final range in hiddenRanges.ranges) {
       final startLine = range.firstLine;

@@ -87,7 +87,7 @@ void main() {
     const affinities = [TextAffinity.upstream, TextAffinity.downstream];
 
     for (final example in examples) {
-      for (int affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
+      for (var affinityIndex = 0; affinityIndex < 2; affinityIndex++) {
         final affinity = affinities[affinityIndex];
         final reason = '${example.name}, $affinity';
 

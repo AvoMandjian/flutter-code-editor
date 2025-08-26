@@ -202,7 +202,7 @@ void main() {
           manualHistoryRecords.length,
         );
 
-        for (int i = 0; i < manualHistoryRecords.length; i++) {
+        for (var i = 0; i < manualHistoryRecords.length; i++) {
           expect(
             manualHistoryRecords[i].code,
             controller.historyController.stack[i].code,
@@ -349,7 +349,7 @@ void main() {
 
         // Redo to top.
 
-        for (int i = 0; i < manualHistoryRecords.length; i++) {
+        for (var i = 0; i < manualHistoryRecords.length; i++) {
           expect(
             controller.value.text,
             manualHistoryRecords[i].code.visibleText,
@@ -475,7 +475,7 @@ void main() {
         Code? codeAfterFirstEdit;
         TextSelection? selectionAfterFirstEdit;
 
-        for (int i = 0; i < CodeHistoryController.limit - 2; i++) {
+        for (var i = 0; i < CodeHistoryController.limit - 2; i++) {
           controller.value = controller.value.typed('ab'); // Creates.
 
           // Set after the first change.

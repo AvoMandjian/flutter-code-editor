@@ -8,13 +8,12 @@ class TestAnalyzer extends Mock implements AbstractAnalyzer {}
 
 void main() {
   group('CodeController.analyzer', () {
-    TestAnalyzer testAnalyzer = TestAnalyzer();
+    var testAnalyzer = TestAnalyzer();
 
     setUp(() {
       testAnalyzer = TestAnalyzer();
 
       registerFallbackValue(Code.empty);
-      // ignore: discarded_futures
       when(() => testAnalyzer.analyze(any())).thenAnswer(
         (_) async => const AnalysisResult(issues: []),
       );
@@ -24,7 +23,7 @@ void main() {
       final languages = [null, java];
       final analyzers = [testAnalyzer, testAnalyzer];
 
-      for (int i = 0; i < languages.length; i++) {
+      for (var i = 0; i < languages.length; i++) {
         final controller =
             CodeController(language: languages[i], analyzer: analyzers[i]);
 

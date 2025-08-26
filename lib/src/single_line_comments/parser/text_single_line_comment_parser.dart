@@ -19,8 +19,8 @@ class TextSingleLineCommentParser extends AbstractSingleLineCommentParser {
 
   void _parse() {
     final lines = text.split('\n');
-    int lineIndex = 0;
-    int characterIndex = 0;
+    var lineIndex = 0;
+    var characterIndex = 0;
 
     for (final line in lines) {
       final column = _getCommentColumn(line);

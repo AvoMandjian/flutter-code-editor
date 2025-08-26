@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_private_typedef_functions
 
 import 'package:flutter_code_editor/src/code/code_lines_builder.dart';
 import 'package:flutter_code_editor/src/folding/foldable_block.dart';

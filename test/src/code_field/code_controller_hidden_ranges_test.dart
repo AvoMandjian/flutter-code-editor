@@ -117,7 +117,7 @@ class MyClass {
         await wt.sendKeyEvent(LogicalKeyboardKey.arrowUp);
         await wt.sendKeyUpEvent(LogicalKeyboardKey.alt);
 
-        for (int i = 37; --i >= 0;) {
+        for (var i = 37; --i >= 0;) {
           await wt.sendKeyEvent(LogicalKeyboardKey.arrowRight);
         }
 

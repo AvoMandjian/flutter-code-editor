@@ -53,10 +53,10 @@ class HiddenRanges {
   }
 
   static List<int> _getHiddenCharactersBeforeRanges(List<HiddenRange> ranges) {
-    int sum = 0;
+    var sum = 0;
     final result = List.filled(ranges.length + 1, 0);
 
-    for (int i = 1; i <= ranges.length; i++) {
+    for (var i = 1; i <= ranges.length; i++) {
       sum += ranges[i - 1].length;
       result[i] = sum;
     }
@@ -79,7 +79,7 @@ class HiddenRanges {
     int rangeIndex = _getFirstRangeIndexThatCanOverlapWith(start);
 
     // The current position in a virtual full string we are cutting.
-    int position = start;
+    var position = start;
 
     // In this loop, for each range add the content before its start.
     // Break in 2 cases:
@@ -108,7 +108,7 @@ class HiddenRanges {
   /// with a string that starts at [start]. It just skips ranges that end
   /// before [start].
   int _getFirstRangeIndexThatCanOverlapWith(int start) {
-    int i = 0;
+    var i = 0;
 
     for (; i < ranges.length; i++) {
       if (ranges[i].end > start) {
@@ -125,7 +125,7 @@ class HiddenRanges {
       return null;
     }
 
-    int fullChar = 0;
+    var fullChar = 0;
 
     String? cutHighlightedString(String? nodeValue) {
       if (nodeValue == null) {
@@ -175,7 +175,7 @@ class HiddenRanges {
       return position - hiddenCharactersBeforeRanges.last;
     }
 
-    int lowerRange = 0;
+    var lowerRange = 0;
     int upperRange = ranges.length - 1;
 
     // Linear interpolation search.
@@ -238,7 +238,7 @@ class HiddenRanges {
       return position + hiddenCharactersBeforeRanges.last;
     }
 
-    int lowerRange = 0;
+    var lowerRange = 0;
     int upperRange = ranges.length - 1;
 
     // Linear interpolation search.

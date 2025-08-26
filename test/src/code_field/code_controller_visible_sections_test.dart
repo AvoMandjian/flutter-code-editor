@@ -184,7 +184,7 @@ class MyClass {
       final controller = createTestController({'whole'});
 
       final newLineIndexes = '\n'.allMatches(_fullVisibleText).toList();
-      for (int i = 0; i < newLineIndexes.length; i++) {
+      for (var i = 0; i < newLineIndexes.length; i++) {
         final index = newLineIndexes[i].start;
         // ignore: prefer_interpolation_to_compose_strings
         final newText = _fullVisibleText.substring(0, index) +

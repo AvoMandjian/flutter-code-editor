@@ -32,7 +32,7 @@ class CodeLines with EquatableMixin {
   ///
   /// Other values throw [RangeError].
   int characterIndexToLineIndex(int characterIndex) {
-    int lowerLine = 0;
+    var lowerLine = 0;
     int upperLine = lines.length - 1;
 
     while (true) {

@@ -5,7 +5,7 @@ import 'line_semantics.dart';
 
 /// A parser that iterates textual content to find foldable blocks.
 abstract class TextFoldableBlockParser extends AbstractFoldableBlockParser {
-  int _lineIndex = 0;
+  var _lineIndex = 0;
 
   int get lineIndex => _lineIndex;
 
@@ -13,7 +13,7 @@ abstract class TextFoldableBlockParser extends AbstractFoldableBlockParser {
   void addToLineIndex(int n) => _lineIndex += n;
 
   /// If in the current line we found any keyword with import semantics.
-  bool _foundImport = false;
+  var _foundImport = false;
 
   @protected
   void setFoundImport() => _foundImport = true;
@@ -22,20 +22,20 @@ abstract class TextFoldableBlockParser extends AbstractFoldableBlockParser {
 
   /// If in the current line we found any keyword that may or may not
   /// have import semantics depending on the context.
-  bool _foundPossibleImport = false;
+  var _foundPossibleImport = false;
 
   @protected
   void setFoundPossibleImport() => _foundPossibleImport = true;
 
   /// If in the current line we found anything that terminates
   /// an import sequence.
-  bool _foundImportTerminator = false;
+  var _foundImportTerminator = false;
 
   @protected
   void setFoundImportTerminator() => _foundImportTerminator = true;
 
   /// If in the current line we found a non-service single-line comment.
-  bool _foundSingleLineComment = false;
+  var _foundSingleLineComment = false;
 
   bool get foundSingleLineComment => _foundSingleLineComment;
 
@@ -44,7 +44,7 @@ abstract class TextFoldableBlockParser extends AbstractFoldableBlockParser {
 
   // if in the current we found a multiline comment,
   // or the line is inside of a multiline comment
-  bool _foundMultilineComment = false;
+  var _foundMultilineComment = false;
 
   bool get foundMultilineComment => _foundMultilineComment;
 
@@ -53,7 +53,7 @@ abstract class TextFoldableBlockParser extends AbstractFoldableBlockParser {
 
   /// If in the current line we found a non-whitespace character that is
   /// not a comment.
-  bool _foundNonWhitespace = false;
+  var _foundNonWhitespace = false;
 
   bool get foundNonWhitespace => _foundNonWhitespace;
 

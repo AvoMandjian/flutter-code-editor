@@ -107,7 +107,7 @@ extension FoldableBlockList on List<FoldableBlock> {
     final ancestors = <FoldableBlock>[];
     final ancestorIndexToOverallIndex = <int>[];
 
-    for (int overallIndex = 0; overallIndex < length; overallIndex++) {
+    for (var overallIndex = 0; overallIndex < length; overallIndex++) {
       // The pointer to the block we currently compare with ancestors.
       // If it merges with any ancestor, it is redefined to point
       // to that ancestor (bubbles up).
@@ -118,7 +118,7 @@ extension FoldableBlockList on List<FoldableBlock> {
       ancestorIndexToOverallIndex.add(overallIndex);
 
       int bubbleIndexInAncestors = ancestors.length - 1;
-      int bubbleOverallIndex = overallIndex;
+      var bubbleOverallIndex = overallIndex;
 
       // And fix every violation of the hierarchy by bubbling the block up,
       // removing non-ancestors from the working list, and joining when needed.

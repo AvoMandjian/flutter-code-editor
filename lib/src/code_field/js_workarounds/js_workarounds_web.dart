@@ -1,4 +1,3 @@
-// ignore: avoid_web_libraries_in_flutter
 import 'dart:js_interop' as js;
 import 'dart:js_interop_unsafe' as js_util;
 
@@ -18,7 +17,7 @@ var disableSpellCheck = setInterval(function () {
     }, 1000);
 ''';
 
-bool _isTimerSet = false;
+var _isTimerSet = false;
 
 void disableSpellCheck() {
   if (!_isTimerSet) {

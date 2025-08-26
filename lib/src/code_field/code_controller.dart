@@ -66,7 +66,7 @@ class CodeController extends TextEditingController {
   }
 
   AnalysisResult analysisResult;
-  String _lastAnalyzedText = '';
+  var _lastAnalyzedText = '';
   Timer? _debounce;
 
   final AbstractNamedSectionParser? namedSectionParser;
@@ -89,7 +89,7 @@ class CodeController extends TextEditingController {
   final bool _isTabReplacementEnabled;
 
   /* Computed members */
-  String _languageId = '';
+  var _languageId = '';
 
   ///Contains names of named sections, those will be visible for user.
   ///If it is not empty, all another code except specified will be hidden.
@@ -133,7 +133,7 @@ class CodeController extends TextEditingController {
   @visibleForTesting
   TextSpan? lastTextSpan;
 
-  bool _disposed = false;
+  var _disposed = false;
   String? subLanguage;
 
   late final actions = <Type, Action<Intent>>{

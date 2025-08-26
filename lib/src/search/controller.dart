@@ -23,9 +23,9 @@ const _hidingCheckInterval = Duration(milliseconds: 1000);
 /// Notifies the listeners only when shown or hidden.
 class CodeSearchController extends ChangeNotifier {
   bool get shouldShow => _shouldShow;
-  bool _shouldShow = false;
+  var _shouldShow = false;
 
-  final SearchSettingsController settingsController =
+  final settingsController =
       SearchSettingsController();
   final SearchNavigationController navigationController;
 
@@ -38,9 +38,9 @@ class CodeSearchController extends ChangeNotifier {
     _codeFieldFocusNode?.addListener(_onFocusChange);
   }
 
-  late final FocusNode patternFocusNode = FocusNode(onKeyEvent: _onkey);
+  late final patternFocusNode = FocusNode(onKeyEvent: _onkey);
 
-  int _focusChangesWithinTimeFrame = 0;
+  var _focusChangesWithinTimeFrame = 0;
   Timer? _hidingTimer;
 
   CodeSearchController({

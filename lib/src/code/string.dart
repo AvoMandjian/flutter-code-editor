@@ -40,7 +40,7 @@ extension StringExtension on String {
 
   TextRange _getChangedRangeAttributeChangeUpstream(String old) {
     final minLast = max(0, length - old.length) - 1;
-    int start = 0;
+    var start = 0;
     int last = length - 1;
     int oldLast = old.length - 1;
 
@@ -59,7 +59,7 @@ extension StringExtension on String {
 
   TextRange _getChangedRangeAttributeChangeDownstream(String old) {
     final minLength = min(length, old.length);
-    int start = 0;
+    var start = 0;
     int last = length - 1;
     int oldLast = old.length - 1;
 

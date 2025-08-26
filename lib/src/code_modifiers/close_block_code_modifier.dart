@@ -16,7 +16,7 @@ class CloseBlockModifier extends CodeModifier {
     TextSelection sel,
     EditorParams params,
   ) {
-    int spaceCount = 0;
+    var spaceCount = 0;
 
     for (var k = min(sel.start, text.length) - 1; k >= 0; k--) {
       if (text[k] == '\n') {

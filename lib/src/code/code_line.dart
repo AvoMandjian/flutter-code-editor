@@ -63,7 +63,7 @@ class CodeLine {
       );
 
   static int _calculateIndent(String text) {
-    int indentation = 0;
+    var indentation = 0;
     for (final character in text.runes) {
       if (character == $space || character == $tab || character == $lf) {
         indentation++;

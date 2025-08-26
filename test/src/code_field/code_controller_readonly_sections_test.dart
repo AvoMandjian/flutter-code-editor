@@ -29,7 +29,7 @@ void main() {
     });
 
     test('Initial, changing', () {
-      int notifiedCount = 0;
+      var notifiedCount = 0;
       final controller = CodeController(
         text: TwoMethodsSnippet.full,
         language: TwoMethodsSnippet.mode,

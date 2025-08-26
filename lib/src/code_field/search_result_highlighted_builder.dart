@@ -50,7 +50,7 @@ class SearchResultHighlightedBuilder {
   late final List<int> matchIndexes;
 
   /// Current index of [matchIndexes] that is being processed.
-  int _currentMatchIndex = 0;
+  var _currentMatchIndex = 0;
 
   /// Whether the text before [_currentMatchIndex]
   /// should have search or regular style.
@@ -61,7 +61,7 @@ class SearchResultHighlightedBuilder {
 
   /// Number of characters of the whole text that are already processed.
   /// Also the current position in the text that we are about to process.
-  int _currentWindowStart = 0;
+  var _currentWindowStart = 0;
 
   /// `TextStyle` of current span that is being processed.
   TextStyle? _currentSpanStyle;

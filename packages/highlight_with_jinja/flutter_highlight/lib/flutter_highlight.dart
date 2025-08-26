@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:highlight/highlight.dart' show highlight, Node;
+import 'package:highlight/highlight.dart' show Node, highlight;
 
 /// Highlight Flutter Widget
 class HighlightView extends StatelessWidget {
@@ -37,30 +37,30 @@ class HighlightView extends StatelessWidget {
   }) : source = input.replaceAll('\t', ' ' * tabSize);
 
   List<TextSpan> _convert(List<Node> nodes) {
-    List<TextSpan> spans = [];
+    final List<TextSpan> spans = [];
     var currentSpans = spans;
-    List<List<TextSpan>> stack = [];
+    final List<List<TextSpan>> stack = [];
 
-    _traverse(Node node) {
+    void traverse(Node node) {
       if (node.value != null) {
         currentSpans.add(node.className == null ? TextSpan(text: node.value) : TextSpan(text: node.value, style: theme[node.className!]));
       } else if (node.children != null) {
-        List<TextSpan> tmp = [];
+        final List<TextSpan> tmp = [];
         currentSpans.add(TextSpan(children: tmp, style: theme[node.className!]));
         stack.add(currentSpans);
         currentSpans = tmp;
 
-        node.children!.forEach((n) {
-          _traverse(n);
+        for (final n in node.children!) {
+          traverse(n);
           if (n == node.children!.last) {
             currentSpans = stack.isEmpty ? spans : stack.removeLast();
           }
-        });
+        }
       }
     }
 
-    for (var node in nodes) {
-      _traverse(node);
+    for (final node in nodes) {
+      traverse(node);
     }
 
     return spans;
@@ -77,17 +77,15 @@ class HighlightView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _textStyle = TextStyle(fontFamily: _defaultFontFamily, color: theme[_rootKey]?.color ?? _defaultFontColor);
-    if (textStyle != null) {
-      _textStyle = _textStyle.merge(textStyle);
-    }
-
+    var textStyle = TextStyle(fontFamily: _defaultFontFamily, color: theme[_rootKey]?.color ?? _defaultFontColor);
+    textStyle = textStyle.merge(textStyle);
+  
     return Container(
       color: theme[_rootKey]?.backgroundColor ?? _defaultBackgroundColor,
       padding: padding,
       child: RichText(
         text: TextSpan(
-          style: _textStyle,
+          style: textStyle,
           children: _convert(highlight.parse(source, language: language).nodes!),
         ),
       ),

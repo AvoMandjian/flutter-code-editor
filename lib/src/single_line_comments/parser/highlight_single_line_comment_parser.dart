@@ -21,8 +21,8 @@ class HighlightSingleLineCommentParser extends AbstractSingleLineCommentParser {
   }
 
   void _parse() {
-    int lineIndex = 0;
-    int characterIndex = 0;
+    var lineIndex = 0;
+    var characterIndex = 0;
 
     for (final node in highlighted.nodes ?? const <Node>[]) {
       if (node.className == 'comment') {

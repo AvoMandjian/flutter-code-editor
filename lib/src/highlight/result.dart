@@ -6,8 +6,8 @@ extension MyResult on Result {
   void forEachNode(
     void Function(Node node, int lineIndex, int characterIndex) callback,
   ) {
-    int lineIndex = 0;
-    int characterIndex = 0;
+    var lineIndex = 0;
+    var characterIndex = 0;
 
     void walk(List<Node> nodes) {
       for (final node in nodes) {
@@ -30,8 +30,8 @@ extension MyResult on Result {
   void forEachTopLevelNode(
     void Function(Node node, int lineIndex, int characterIndex) callback,
   ) {
-    int lineIndex = 0;
-    int characterIndex = 0;
+    var lineIndex = 0;
+    var characterIndex = 0;
 
     for (final node in nodes ?? const <Node>[]) {
       callback(node, lineIndex, characterIndex);

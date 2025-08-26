@@ -23,13 +23,13 @@ class FallbackFoldableBlockParser extends TextFoldableBlockParser {
   bool get _isInMultilineComment => _startedMultilineCommentSequence != null;
 
   /// If in a string literal the last char was a backslash.
-  bool _wasBackslash = false;
+  var _wasBackslash = false;
 
-  bool _isInSingleQuoteLiteral = false;
-  bool _isInDoubleQuoteLiteral = false;
+  var _isInSingleQuoteLiteral = false;
+  var _isInDoubleQuoteLiteral = false;
 
-  bool _foundServiceSingleLineComment = false;
-  bool _isLineStart = true;
+  var _foundServiceSingleLineComment = false;
+  var _isLineStart = true;
 
   FallbackFoldableBlockParser({
     required this.importPrefixes,
@@ -72,7 +72,7 @@ class FallbackFoldableBlockParser extends TextFoldableBlockParser {
     required Set<int> serviceCommentLines,
     required CodeLines lines,
   }) {
-    String line = '';
+    var line = '';
 
     for (final code in text.runes) {
       line += String.fromCharCode(code);

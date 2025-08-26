@@ -71,7 +71,7 @@ class CodeEditor extends StatefulWidget {
 }
 
 class _CodeEditorState extends State<CodeEditor> {
-  bool _expands = false;
+  var _expands = false;
 
   String _controllerKey = controllers.keys.first;
   TextEditingController _controller = controllers.values.first;
@@ -141,7 +141,7 @@ class _CodeEditorState extends State<CodeEditor> {
   Future<String> _setTexts() async {
     final durations = <double>[];
 
-    for (int i = 1; i <= maxKLines; i++) {
+    for (var i = 1; i <= maxKLines; i++) {
       durations.add(await _setText(i));
     }
 
