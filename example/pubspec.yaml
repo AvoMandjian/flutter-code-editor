@@ -1,20 +1,26 @@
 name: example
 description: Example
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.17.0 <3.0.0'
-  flutter: '>=3.13.6'
+  sdk: ">=2.17.0 <3.0.0"
+  flutter: ">=3.13.6"
 
 dependencies:
   flutter: { sdk: flutter }
   flutter_code_editor: { path: ../ }
+  flutter_widget_from_html_core: ^0.17.0
   flutter_highlight:
     path: ../packages/highlight_with_jinja/flutter_highlight
-  highlight: 
+  highlight:
     path: ../packages/highlight_with_jinja/highlight
   http: ^1.1.0
+  jinja:
+    # path: ../../forked_projects/jinja.dart
+    git:
+      url: https://github.com/AvoMandjian/jinja.dart.git
+      ref: DP_V4
 
 dev_dependencies:
   flutter_test: { sdk: flutter }
