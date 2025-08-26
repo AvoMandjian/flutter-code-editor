@@ -4,6 +4,9 @@ class GutterStyle {
   /// Width of the line number column.
   final double gutterWidthMultiplier;
 
+  /// Width of the line number column with breakpoints.
+  final double gutterWidthMultiplierWithBreakpoints;
+
   /// Alignment of the numbers in the column.
   final TextAlign textAlign;
 
@@ -45,8 +48,7 @@ class GutterStyle {
   final double maxWidth;
 
   /// Whether there is any column to show in gutter.
-  bool get showGutter =>
-      showLineNumbers || showErrors || showFoldingHandles || showBreakpoints;
+  bool get showGutter => showLineNumbers || showErrors || showFoldingHandles || showBreakpoints;
 
   const GutterStyle({
     this.margin = 10.0,
@@ -57,6 +59,7 @@ class GutterStyle {
     this.showBreakpoints = false,
     this.breakpointColor = Colors.red,
     this.gutterWidthMultiplier = 32,
+    this.gutterWidthMultiplierWithBreakpoints = 200,
     this.background,
     this.errorPopupTextStyle,
     this.textStyle,
@@ -67,11 +70,10 @@ class GutterStyle {
   ///
   /// Use this instead of all-`false` because new elements can be added
   /// to the gutter in the future versions.
-  static const GutterStyle none = GutterStyle(
+  static const none = GutterStyle(
     showErrors: false,
     showFoldingHandles: false,
     showLineNumbers: false,
-    showBreakpoints: false,
   );
 
   GutterStyle copyWith({
@@ -80,9 +82,12 @@ class GutterStyle {
     double? maxWidth,
     bool? showBreakpoints,
     Color? breakpointColor,
+    double? gutterWidthMultiplier,
+    double? gutterWidthMultiplierWithBreakpoints,
   }) =>
       GutterStyle(
-        gutterWidthMultiplier: gutterWidthMultiplier,
+        gutterWidthMultiplier: gutterWidthMultiplier ?? this.gutterWidthMultiplier,
+        gutterWidthMultiplierWithBreakpoints: gutterWidthMultiplierWithBreakpoints ?? this.gutterWidthMultiplierWithBreakpoints,
         textAlign: textAlign,
         textStyle: textStyle ?? this.textStyle,
         errorPopupTextStyle: errorPopupTextStyle,
