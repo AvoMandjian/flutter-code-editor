@@ -2,14 +2,11 @@
 // instead of an ordinary TextField.
 // This automatically adds the gutter, code folding, and basic autocompletion.
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_code_editor/flutter_code_editor.dart';
 import 'package:flutter_highlight/theme_map.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:highlight/languages/jinja.dart';
-import 'package:intl/intl.dart';
 import 'package:jinja/debug.dart';
 import 'package:jinja/jinja.dart';
 
@@ -37,11 +34,11 @@ class _CodeEditorState extends State<CodeEditor> {
   };
   final env = Environment();
   var templateSource = '''
-{% set dealership = dealership %}
 {% set dealershipName = dealership.name %}
 {% set dealershipAddress = dealership.address %}
-{{dealershipName}}
-{{dealershipAddress}}
+{% for i in [0,1,2,3] %}
+  {{ dealershipName }} {{ i }}
+{% endfor %}
 ''';
   var templateSourceDebug = '''
 <div style="
@@ -137,7 +134,7 @@ class _CodeEditorState extends State<CodeEditor> {
       <br>
         <table>
           <tr>
-            <th>Variables:</th>
+            <th>Local variables:</th>
           </tr>
           {% for key, value in variables %}
             <tr>
@@ -316,13 +313,19 @@ class _CodeEditorState extends State<CodeEditor> {
               icon: const Icon(Icons.rocket),
               onPressed: () async {
                 _breakpoints.forEach(debugController.addLineBreakpoint);
-
+                breakpointsInfo.value.clear();
                 debugController.onBreakpoint = (info) async {
-                  breakpointsInfo.value[info.lineNumber.toString()] = {
+                  var count = 0;
+                  try {
+                    count = breakpointsInfo.value.keys.where((element) => element.contains(info.lineNumber.toString())).toList().length;
+                  } catch (_) {
+                    count = 0;
+                  }
+                  breakpointsInfo.value['${info.lineNumber}_$count'] = {
                     'nodeType': info.nodeType,
                     'variables': info.variables,
                     'outputSoFar': info.outputSoFar,
-                    'lineNumber': info.lineNumber,
+                    'lineNumber': count == 0 ? info.lineNumber : '${info.lineNumber}\nloop count: ${count + 1}',
                     'nodeName': info.nodeName,
                     'nodeData': info.nodeData.toString(),
                   };
@@ -343,64 +346,54 @@ class _CodeEditorState extends State<CodeEditor> {
         ),
         body: CodeTheme(
           data: CodeThemeData(styles: themeMap['custom_theme_light']),
-          child: Column(
-            children: [
-              ValueListenableBuilder<String?>(
-                valueListenable: valueNotifierResultJinja,
-                builder: (context, value, child) {
-                  if (value == null) {
-                    return const SizedBox.shrink();
-                  }
-                  return Text(value);
-                },
-              ),
-              ValueListenableBuilder<Map<String, dynamic>>(
-                valueListenable: breakpointsInfo,
-                builder: (context, value, child) {
-                  if (value.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return SingleChildScrollView(
-                    child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ValueListenableBuilder<String?>(
+                  valueListenable: valueNotifierResultJinja,
+                  builder: (context, value, child) {
+                    if (value == null) {
+                      return const SizedBox.shrink();
+                    }
+                    return Text(value);
+                  },
+                ),
+                ValueListenableBuilder<Map<String, dynamic>>(
+                  valueListenable: breakpointsInfo,
+                  builder: (context, value, child) {
+                    if (value.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return Column(
                       children: value.entries.map((e) {
-                        valueNotifierResultDebug.value = templateOfDebug.render(
-                          e.value,
-                        );
-
                         return Padding(
                           padding: const EdgeInsets.all(8),
-                          child: ValueListenableBuilder<String?>(
-                            valueListenable: valueNotifierResultDebug,
-                            builder: (context, value, child) {
-                              return HtmlWidget(
-                                value ?? '',
-                              );
-                            },
+                          child: HtmlWidget(
+                            templateOfDebug.render(
+                                  e.value,
+                                ) ??
+                                '',
                           ),
                         );
                       }).toList(),
-                    ),
-                  );
-                },
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: CodeField(
-                    customThemes: customThemes,
-                    controller: _codeController!,
-                    gutterStyle: const GutterStyle(
-                      showBreakpoints: true,
-                    ),
+                    );
+                  },
+                ),
+                CodeField(
+                  customThemes: customThemes,
+                  controller: _codeController!,
+                  gutterStyle: const GutterStyle(
+                    showBreakpoints: true,
                   ),
                 ),
-              ),
-              if (_breakpoints.isNotEmpty)
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  color: Colors.grey.shade200,
-                  child: Text('Breakpoints: ${_breakpoints.join(', ')}'),
-                ),
-            ],
+                if (_breakpoints.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    color: Colors.grey.shade200,
+                    child: Text('Breakpoints: ${_breakpoints.join(', ')}'),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
