@@ -7,112 +7,56 @@ const templateSource = '''
 ''';
 
 const templateSourceDebug = '''
-<div style="
-  font-family: 'SF Mono', 'Roboto Mono', monospace;
-  background: #1e1e1e;
-  color: #dcdcdc;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-  overflow-x: auto;
-  border: 1px solid #2d2d2d;
-  margin: auto;
-">
-  <style>
-    .debug-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #9cdcfe;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #333;
-    }
-    .debug-panel {
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    .debug-panel th, .debug-panel td {
-      text-align: left;
-      padding: 10px 14px;
-      border-bottom: 1px solid #333;
-      vertical-align: top;
-      word-break: break-word;
-    }
-    .debug-panel th {
-      color: #9cdcfe;
-      font-weight: 600;
-      background: #252526;
-      border-right: 1px solid #333;
-    }
-    .debug-panel tr:hover {
-      background: #2a2d2e;
-    }
-    .debug-panel tr:last-child td {
-      border-bottom: none;
-    }
-    .debug-panel pre {
-      margin: 0;
-      padding: 8px 10px;
-      background: #252526;
-      border-radius: 6px;
-      white-space: pre-wrap;
-      font-family: inherit;
-      font-size: 13px;
-      line-height: 1.4;
-      overflow-x: auto;
-    }
-    .debug-panel .json-value {
-      color: #ce9178;
-    }
-    .debug-panel .json-key {
-      color: #9cdcfe;
-    }
-  </style>
-
-  <!-- Title -->
-  <div class="debug-title">
+<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #333; background-color: #f9f9f9; padding: 16px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+  <div style="font-size: 18px; font-weight: 600; color: #111; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
     Debug – Line {{lineNumber}}
   </div>
 
-  <table class="debug-panel">
-    <tr>
-      <th>Node Type:</th>
-      <td><span class="json-value">{{nodeType}}</span></td>
+  <table style="border-collapse: collapse; width: 100%; border-radius: 8px; overflow: hidden;">
+    <tr style="background-color: #f0f0f0;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555; width: 150px;">Node Type:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px;"><span style="font-family: 'Courier New', Courier, monospace; background-color: #e7e7e7; padding: 2px 6px; border-radius: 4px; font-size: 14px;">{{nodeType}}</span></td>
     </tr>
-    <tr>
-      <th>Node Name:</th>
-      <td><span class="json-value">{{nodeName}}</span></td>
+    <tr style="background-color: #ffffff;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Node Name:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px;"><span style="font-family: 'Courier New', Courier, monospace; background-color: #e7e7e7; padding: 2px 6px; border-radius: 4px; font-size: 14px;">{{nodeName}}</span></td>
     </tr>
-    <tr>
-      <th>Line Number:</th>
-      <td><span class="json-value">{{lineNumber}}</span></td>
+    <tr style="background-color: #f0f0f0;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Line Number:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px;"><span style="font-family: 'Courier New', Courier, monospace; background-color: #e7e7e7; padding: 2px 6px; border-radius: 4px; font-size: 14px;">{{lineNumber}}</span></td>
     </tr>
-    <tr>
-      <th>Output So Far:</th>
-      <td>{{outputSoFar}}</td>
+    <tr style="background-color: #ffffff;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Output So Far:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 14px;">{{outputSoFar}}</td>
     </tr>
-    <tr>
-      <th>Node Data:</th>
-      <td>{{nodeData}}</td>
+    <tr style="background-color: #f0f0f0;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Current Output:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 14px;">{{currentOutput}}</td>
     </tr>
-    <tr>
-      <td>
-      <br>
-        <table>
-          <tr>
-            <th>Local variables:</th>
-          </tr>
+    <tr style="background-color: #ffffff;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Node Data:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 12px; font-family: 'Courier New', Courier, monospace; font-size: 14px;">{{nodeData}}</td>
+    </tr>
+    <tr style="background-color: #f0f0f0;">
+      <th style="border: 1px solid #e0e0e0; padding: 12px; text-align: left; font-weight: 600; color: #555;">Local variables:</th>
+      <td style="border: 1px solid #e0e0e0; padding: 0;">
+        <table style="border-collapse: collapse; width: 100%;">
           {% for key, value in variables %}
-            <tr>
-              <th>{{key}} ----> </th>
-              <td>{{value}}</td>
+            <tr style="background-color: #fafafa;">
+              <th colspan="2" style="border: 1px solid #e0e0e0; padding: 10px; text-align: left; font-weight: 600; color: #333; background-color: #e9e9e9;">{{key}}</th>
+            </tr>
+            <tr style="background-color: #ffffff;">
+              <td colspan="2" style="border: 1px solid #e0e0e0; padding: 10px;">
+                <json-editor>{{value | tojson}}</json-editor>
+              </td>
             </tr>
           {% endfor %}
         </table>
       </td>
     </tr>
   </table>
-</div>''';
+</div>
+''';
 
 final Map<String, dynamic> dataToPassToJinja = {
   'subcategory_title': 'Su',

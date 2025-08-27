@@ -19,7 +19,9 @@ class JinjaService {
     required Set<int> breakpoints,
     required ValueChanged<Map<String, dynamic>> onBreakpoint,
   }) {
-    breakpoints.forEach(_debugController.addLineBreakpoint);
+    for (final element in breakpoints) {
+      _debugController.addBreakpoint(line: element);
+    }
 
     final Map<String, dynamic> newBreakpointsInfo = {};
 
@@ -30,14 +32,13 @@ class JinjaService {
         'nodeType': info.nodeType,
         'variables': info.variables,
         'outputSoFar': info.outputSoFar,
+        'currentOutput': info.currentOutput,
         'lineNumber': count == 0 ? info.lineNumber : '${info.lineNumber}\nloop count: ${count + 1}',
         'nodeName': info.nodeName,
         'nodeData': info.nodeData.toString(),
       };
 
       onBreakpoint(Map.from(newBreakpointsInfo));
-
-      return DebugAction.continueExecution;
     };
 
     return _templateOfJinja.renderDebug(

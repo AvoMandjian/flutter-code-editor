@@ -20,7 +20,7 @@ dependencies:
     # path: ../../forked_projects/jinja.dart
     git:
       url: https://github.com/AvoMandjian/jinja.dart.git
-      ref: DP_V4
+      ref: DP_5
 
 dev_dependencies:
   flutter_test: { sdk: flutter }
