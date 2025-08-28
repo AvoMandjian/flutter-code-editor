@@ -50,6 +50,7 @@ class GutterWidget extends StatelessWidget {
     final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
     final breakpointColumnWidth = style.showBreakpoints ? _breakpointColumnWidth : 0.0;
 
+
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
       // ignore: prefer_const_constructors

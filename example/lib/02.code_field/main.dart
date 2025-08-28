@@ -20,6 +20,7 @@ class CodeEditorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Code Editor',
       debugShowCheckedModeBanner: false,
       home: CodeEditorScreen(),
     );
