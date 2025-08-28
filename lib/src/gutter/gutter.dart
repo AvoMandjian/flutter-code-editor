@@ -40,13 +40,15 @@ class GutterWidget extends StatelessWidget {
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
 
-    final gutterWidth = ((style.gutterWidthMultiplier) * codeController.code.lines.length.toString().length) -
+    final gutterWidth = ((style.showBreakpoints ? style.gutterWidthMultiplierWithBreakpoints : style.gutterWidthMultiplier) *
+            codeController.code.lines.length.toString().length) -
         (style.showErrors ? 0 : _issueColumnWidth) -
-        (style.showFoldingHandles ? 0 : _foldingColumnWidth);
+        (style.showFoldingHandles ? 0 : _foldingColumnWidth) -
+        (style.showBreakpoints ? 0 : _breakpointColumnWidth);
 
     final issueColumnWidth = style.showErrors ? _issueColumnWidth : 0.0;
     final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
-
+    final breakpointColumnWidth = style.showBreakpoints ? _breakpointColumnWidth : 0.0;
 
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
@@ -86,6 +88,7 @@ class GutterWidget extends StatelessWidget {
           controller: scrollController,
           child: Table(
             columnWidths: {
+              _breakpointColumn: FixedColumnWidth(breakpointColumnWidth),
               _lineNumberColumn: const FlexColumnWidth(),
               _issueColumn: FixedColumnWidth(issueColumnWidth),
               _foldingColumn: FixedColumnWidth(foldingColumnWidth),
