@@ -15,9 +15,13 @@ dependencies:
   equatable: ^2.0.5
   flutter: { sdk: flutter }
   flutter_highlight:
-    path: packages/highlight_with_jinja/flutter_highlight
+     git:
+      url: https://git.jinja.app/jinja.app/jinja_flutter_highlight.git
+      ref: dev
   highlight:
-    path: packages/highlight_with_jinja/highlight
+    git:
+      url: https://git.jinja.app/jinja.app/jinja_highlight.git
+      ref: dev
   http: ^1.1.0
   linked_scroll_controller: ^0.2.0
   meta: ^1.9.1
