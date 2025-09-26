@@ -13,11 +13,11 @@ dependencies:
   flutter_widget_from_html_core: ^0.17.0
   flutter_highlight:
      git:
-      url: https://git.jinja.app/jinja.app/jinja_flutter_highlight.git
+      url: git@git.jinja.app:jinja.app/jinja_flutter_highlight.git
       ref: dev
   highlight:
     git:
-      url: https://git.jinja.app/jinja.app/jinja_highlight.git
+      url: git@git.jinja.app:jinja.app/jinja_highlight.git
       ref: dev
   http: ^1.1.0
   jinja:
