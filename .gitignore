@@ -50,3 +50,5 @@ pubspec.lock
 # FVM Version Cache
 .fvm/
 qdrant_data/
+.cursor
+CURSOR.md
