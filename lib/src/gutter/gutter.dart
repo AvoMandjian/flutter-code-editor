@@ -9,10 +9,6 @@ import 'breakpoint.dart';
 import 'error.dart';
 import 'fold_toggle.dart';
 
-const _issueColumnWidth = 16.0;
-const _foldingColumnWidth = 16.0;
-const _breakpointColumnWidth = 16.0;
-
 const _breakpointColumn = 0;
 const _lineNumberColumn = 1;
 const _issueColumn = 2;
@@ -39,16 +35,7 @@ class GutterWidget extends StatelessWidget {
 
   Widget _buildOnChange(BuildContext context, Widget? child) {
     final code = codeController.code;
-
-    final gutterWidth = ((style.showBreakpoints ? style.gutterWidthMultiplierWithBreakpoints : style.gutterWidthMultiplier) *
-            codeController.code.lines.length.toString().length) -
-        (style.showErrors ? 0 : _issueColumnWidth) -
-        (style.showFoldingHandles ? 0 : _foldingColumnWidth) -
-        (style.showBreakpoints ? 0 : _breakpointColumnWidth);
-
-    final issueColumnWidth = style.showErrors ? _issueColumnWidth : 0.0;
-    final foldingColumnWidth = style.showFoldingHandles ? _foldingColumnWidth : 0.0;
-    final breakpointColumnWidth = style.showBreakpoints ? _breakpointColumnWidth : 0.0;
+    final valueNotifierIsHovered = <int, ValueNotifier<bool>>{};
 
     final tableRows = List.generate(
       code.hiddenLineRanges.visibleLineNumbers.length,
@@ -63,12 +50,11 @@ class GutterWidget extends StatelessWidget {
         ],
       ),
     );
+    _fillLineNumbers(tableRows, valueNotifierIsHovered);
 
     if (style.showBreakpoints) {
-      _fillBreakpoints(tableRows);
+      _fillBreakpoints(tableRows, valueNotifierIsHovered);
     }
-
-    _fillLineNumbers(tableRows);
 
     if (style.showErrors) {
       _fillIssues(tableRows);
@@ -79,29 +65,30 @@ class GutterWidget extends StatelessWidget {
 
     return Container(
       padding: EdgeInsets.only(top: 12, bottom: 12, right: style.margin),
-      width: style.showLineNumbers ? gutterWidth : null,
-      constraints: BoxConstraints(maxWidth: style.maxWidth),
       alignment: Alignment.topLeft,
       child: ScrollConfiguration(
         behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
         child: SingleChildScrollView(
           controller: scrollController,
-          child: Table(
-            columnWidths: {
-              _breakpointColumn: FixedColumnWidth(breakpointColumnWidth),
-              _lineNumberColumn: const FlexColumnWidth(),
-              _issueColumn: FixedColumnWidth(issueColumnWidth),
-              _foldingColumn: FixedColumnWidth(foldingColumnWidth),
-            },
-            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-            children: tableRows,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: tableRows.map(
+              (e) {
+                return Row(
+                  children: e.children!.map((e) {
+                    return e;
+                  }).toList(),
+                );
+              },
+            ).toList(),
           ),
         ),
       ),
     );
   }
 
-  void _fillLineNumbers(List<TableRow> tableRows) {
+  void _fillLineNumbers(List<TableRow> tableRows, Map<int, ValueNotifier<bool>> valueNotifierIsHovered) {
     final code = codeController.code;
 
     for (final i in code.hiddenLineRanges.visibleLineNumbers) {
@@ -110,11 +97,20 @@ class GutterWidget extends StatelessWidget {
       if (lineIndex == null) {
         continue;
       }
-
-      tableRows[lineIndex].children![_lineNumberColumn] = Text(
-        style.showLineNumbers ? '${i + 1}' : ' ',
-        style: style.textStyle,
-        textAlign: style.textAlign,
+      valueNotifierIsHovered[lineIndex + 1] = ValueNotifier<bool>(false);
+      tableRows[lineIndex].children![_lineNumberColumn] = MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => valueNotifierIsHovered[lineIndex + 1]!.value = true,
+        onExit: (_) => valueNotifierIsHovered[lineIndex + 1]!.value = false,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => codeController.toggleBreakpoint(lineIndex + 1),
+          child: Text(
+            style.showLineNumbers ? '${i + 1}' : ' ',
+            style: style.textStyle,
+            textAlign: style.textAlign,
+          ),
+        ),
       );
     }
   }
@@ -170,7 +166,7 @@ class GutterWidget extends StatelessWidget {
     }
   }
 
-  void _fillBreakpoints(List<TableRow> tableRows) {
+  void _fillBreakpoints(List<TableRow> tableRows, Map<int, ValueNotifier<bool>> valueNotifierIsHovered) {
     final code = codeController.code;
 
     for (final i in code.hiddenLineRanges.visibleLineNumbers) {
@@ -184,6 +180,7 @@ class GutterWidget extends StatelessWidget {
         line: i + 1,
         controller: codeController,
         color: style.breakpointColor,
+        valueNotifierIsHovered: valueNotifierIsHovered,
       );
     }
   }
