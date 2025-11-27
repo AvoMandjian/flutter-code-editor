@@ -226,7 +226,7 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
   /// - Multi-line template tags (tags with newlines inside)
   /// - Control structures like {% for %}/{% endfor %}, {% if %}/{% endif %}, etc.
   void _processTemplateTag(Node node, Set<Object?> serviceCommentsSources) {
-    final tagValue = node.value ?? '';
+    final tagValue = _getNodeText(node);
     final newlineCount = node.getNewlineCount();
 
     // Check if this is an opening control structure tag
@@ -258,6 +258,19 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
 
     // Single-line tag, process like default node (value + children)
     _processDefault(node, serviceCommentsSources);
+  }
+
+  String _getNodeText(Node node) {
+    final buffer = StringBuffer();
+    if (node.value != null) {
+      buffer.write(node.value);
+    }
+    if (node.children != null) {
+      for (final child in node.children!) {
+        buffer.write(_getNodeText(child));
+      }
+    }
+    return buffer.toString();
   }
 
   /// Checks if a template tag is an opening control structure (for, if, while, etc.)
