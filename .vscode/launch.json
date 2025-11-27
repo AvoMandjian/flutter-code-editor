@@ -8,7 +8,7 @@
             "name": "flutter-code-editor",
             "request": "launch",
             "type": "dart",
-            "program": "example/lib/02.code_field/main.dart",
+            "program": "example/lib/02.code_field/main.dart"
         }
     ]
 }

@@ -6,9 +6,6 @@ import 'package:highlight/languages/jinja.dart';
 import 'code_editor_state.dart';
 import 'constants.dart';
 import 'jinja_service.dart';
-import 'widgets/breakpoints_info_bar.dart';
-import 'widgets/jinja_debug_view.dart';
-import 'widgets/jinja_output_view.dart';
 
 void main() {
   runApp(const CodeEditorApp());
@@ -83,28 +80,11 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
       ),
       body: CodeTheme(
         data: CodeThemeData(styles: themeMap['custom_theme_light']),
-        child: SingleChildScrollView(
-          child: ValueListenableBuilder<CodeEditorStateModel>(
-            valueListenable: _state,
-            builder: (context, state, _) {
-              return Column(
-                children: [
-                  JinjaOutputView(jinjaOutput: state.jinjaOutput),
-                  JinjaDebugView(
-                    breakpointsInfo: state.breakpointsInfo,
-                    jinjaService: _jinjaService,
-                  ),
-                  CodeField(
-                    customThemes: customThemes,
-                    controller: _codeController,
-                    gutterStyle: const GutterStyle(
-                      showBreakpoints: true,
-                    ),
-                  ),
-                  BreakpointsInfoBar(breakpoints: state.breakpoints),
-                ],
-              );
-            },
+        child: CodeField(
+          customThemes: customThemes,
+          controller: _codeController,
+          gutterStyle: const GutterStyle(
+            showBreakpoints: true,
           ),
         ),
       ),
