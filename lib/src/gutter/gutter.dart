@@ -27,9 +27,15 @@ class GutterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: codeController,
-      builder: _buildOnChange,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SingleChildScrollView(
+        controller: scrollController,
+        child: AnimatedBuilder(
+          animation: codeController,
+          builder: _buildOnChange,
+        ),
+      ),
     );
   }
 

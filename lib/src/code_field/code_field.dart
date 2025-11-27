@@ -517,6 +517,7 @@ class _CodeFieldState extends State<CodeField> {
       scrollController: _numberScroll,
       codeController: widget.controller,
       style: gutterStyle,
+      scrollController: _numberScroll,
     );
   }
 
