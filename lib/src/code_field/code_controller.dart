@@ -807,6 +807,7 @@ class CodeController extends TextEditingController {
     return Code(
       text: text,
       language: language,
+      subLanguage: subLanguage,
       highlighted: highlight.parse(text, language: _languageId, subLanguage: subLanguage),
       namedSectionParser: namedSectionParser,
       readOnlySectionNames: _readOnlySectionNames,

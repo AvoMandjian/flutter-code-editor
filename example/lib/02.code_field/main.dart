@@ -41,9 +41,9 @@ class _CodeEditorScreenState extends State<CodeEditorScreen> {
   void initState() {
     super.initState();
     _codeController = CodeController(
-      text: templateSource,
+      text: javaTemplateSource,
       language: jinja,
-      subLanguage: 'xml',
+      subLanguage: 'java',
       onBreakpointsChanged: (breakpoints) {
         _state.value = _state.value.copyWith(breakpoints: breakpoints);
       },

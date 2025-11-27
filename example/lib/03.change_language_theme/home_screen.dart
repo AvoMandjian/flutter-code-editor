@@ -63,9 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
 
           IconButton(
-            color: _showFoldingHandles
-                ? toggleButtonActiveColor
-                : toggleButtonColor,
+            color: _showFoldingHandles ? toggleButtonActiveColor : toggleButtonColor,
             onPressed: () => setState(() {
               _showFoldingHandles = !_showFoldingHandles;
             }),

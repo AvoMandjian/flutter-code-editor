@@ -97,14 +97,14 @@ class GutterWidget extends StatelessWidget {
       if (lineIndex == null) {
         continue;
       }
-      valueNotifierIsHovered[lineIndex + 1] = ValueNotifier<bool>(false);
+      valueNotifierIsHovered[i + 1] = ValueNotifier<bool>(false);
       tableRows[lineIndex].children![_lineNumberColumn] = MouseRegion(
         cursor: SystemMouseCursors.click,
-        onEnter: (_) => valueNotifierIsHovered[lineIndex + 1]!.value = true,
-        onExit: (_) => valueNotifierIsHovered[lineIndex + 1]!.value = false,
+        onEnter: (_) => valueNotifierIsHovered[i + 1]!.value = true,
+        onExit: (_) => valueNotifierIsHovered[i + 1]!.value = false,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => codeController.toggleBreakpoint(lineIndex + 1),
+          onTap: () => codeController.toggleBreakpoint(i + 1),
           child: Text(
             style.showLineNumbers ? '${i + 1}' : ' ',
             style: style.textStyle,

@@ -364,14 +364,28 @@ class _CodeFieldState extends State<CodeField> {
       if (line.length > longestLine.length) longestLine = line;
     });
 
+    // Defer offset calculation until after layout is complete
     if (_codeScroll != null && _editorKey.currentContext != null) {
-      final box = _editorKey.currentContext!.findRenderObject() as RenderBox?;
-      _editorOffset = box?.localToGlobal(Offset.zero);
-      if (_editorOffset != null) {
-        var fixedOffset = _editorOffset!;
-        fixedOffset += Offset(0, _codeScroll!.offset);
-        _editorOffset = fixedOffset;
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        final context = _editorKey.currentContext;
+        if (context != null) {
+          final box = context.findRenderObject() as RenderBox?;
+          if (box != null && box.hasSize) {
+            final newOffset = box.localToGlobal(Offset.zero);
+            if (newOffset != _editorOffset) {
+              setState(() {
+                var fixedOffset = newOffset;
+                final scrollOffset = _codeScroll?.hasClients ?? false ? _codeScroll!.offset : 0.0;
+                fixedOffset += Offset(0, scrollOffset);
+                _editorOffset = fixedOffset;
+              });
+            }
+          }
+        }
+      });
     }
 
     rebuild();
@@ -557,15 +571,17 @@ class _CodeFieldState extends State<CodeField> {
   }
 
   double _getPopupLeftOffset(TextPainter textPainter) {
+    final horizontalOffset = _horizontalCodeScroll?.hasClients ?? false ? _horizontalCodeScroll!.offset : 0.0;
     return max(
-      _getCaretOffset(textPainter).dx + widget.padding.left - _horizontalCodeScroll!.offset + (_editorOffset?.dx ?? 0),
+      _getCaretOffset(textPainter).dx + widget.padding.left - horizontalOffset + (_editorOffset?.dx ?? 0),
       0,
     );
   }
 
   double _getPopupTopOffset(TextPainter textPainter, double caretHeight) {
+    final verticalOffset = _codeScroll?.hasClients ?? false ? _codeScroll!.offset : 0.0;
     return max(
-      _getCaretOffset(textPainter).dy + caretHeight + 16 + widget.padding.top - _codeScroll!.offset + (_editorOffset?.dy ?? 0),
+      _getCaretOffset(textPainter).dy + caretHeight + 16 + widget.padding.top - verticalOffset + (_editorOffset?.dy ?? 0),
       0,
     );
   }

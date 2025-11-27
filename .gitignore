@@ -52,3 +52,5 @@ pubspec.lock
 qdrant_data/
 .cursor
 CURSOR.md
+.serena
+*.md
