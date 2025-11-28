@@ -38,8 +38,7 @@ class InvalidFoldableBlock with EquatableMixin {
 extension InvalidFoldableBlockList on List<InvalidFoldableBlock> {
   void sortByStartOrEndLine() {
     sort(
-      (a, b) =>
-          (a.startLine ?? a.endLine ?? 0) - (b.startLine ?? b.endLine ?? 0),
+      (a, b) => (a.startLine ?? a.endLine ?? 0) - (b.startLine ?? b.endLine ?? 0),
     );
   }
 }

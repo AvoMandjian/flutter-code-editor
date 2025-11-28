@@ -276,29 +276,72 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
   /// Checks if a template tag is an opening control structure (for, if, while, etc.)
   bool _isOpeningControlTag(String tagValue) {
     final normalized = tagValue.trim().toLowerCase();
-    return normalized.startsWith('{%') &&
-        (normalized.contains('for ') ||
-            normalized.contains('if ') ||
-            normalized.contains('while ') ||
-            normalized.contains('with ') ||
-            normalized.contains('macro ') ||
-            normalized.contains('block ') ||
-            normalized.contains('call ') ||
-            normalized.contains('filter '));
+    // Remove the opening delimiter to check keywords at the start
+    var content = normalized;
+    if (content.startsWith('{%-')) {
+      content = content.substring(3).trimLeft();
+    } else if (content.startsWith('{%')) {
+      content = content.substring(2).trimLeft();
+    } else {
+      return false;
+    }
+
+    // Check for start keywords.
+    // We check that the keyword is followed by a space or it's the end of the content (though usually there are params)
+    // or it is followed by the closing delimiter.
+    final keywords = [
+      'for',
+      'if',
+      'while',
+      'with',
+      'macro',
+      'block',
+      'call',
+      'filter',
+    ];
+
+    for (final keyword in keywords) {
+      if (content.startsWith(keyword)) {
+        final afterKeyword = content.substring(keyword.length);
+        if (afterKeyword.isEmpty || afterKeyword.startsWith(' ') || afterKeyword.startsWith('%}') || afterKeyword.startsWith('-%}')) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
-  /// Checks if a template tag is a closing control structure (endfor, endif, etc.)
   bool _isClosingControlTag(String tagValue) {
     final normalized = tagValue.trim().toLowerCase();
-    return normalized.startsWith('{%') &&
-        (normalized.contains('endfor') ||
-            normalized.contains('endif') ||
-            normalized.contains('endwhile') ||
-            normalized.contains('endwith') ||
-            normalized.contains('endmacro') ||
-            normalized.contains('endblock') ||
-            normalized.contains('endcall') ||
-            normalized.contains('endfilter'));
+    var content = normalized;
+    if (content.startsWith('{%-')) {
+      content = content.substring(3).trimLeft();
+    } else if (content.startsWith('{%')) {
+      content = content.substring(2).trimLeft();
+    } else {
+      return false;
+    }
+
+    final keywords = [
+      'endfor',
+      'endif',
+      'endwhile',
+      'endwith',
+      'endmacro',
+      'endblock',
+      'endcall',
+      'endfilter',
+    ];
+
+    for (final keyword in keywords) {
+      if (content.startsWith(keyword)) {
+        final afterKeyword = content.substring(keyword.length);
+        if (afterKeyword.isEmpty || afterKeyword.startsWith(' ') || afterKeyword.startsWith('%}') || afterKeyword.startsWith('-%}')) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /// Processes template variables `{{ ... }}` that span multiple lines.
