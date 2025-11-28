@@ -1,11 +1,8 @@
 import 'package:charcode/ascii.dart';
-import 'package:collection/collection.dart';
 import 'package:highlight/highlight_core.dart';
 
 import '../../code/code_lines.dart';
-import '../../highlight/keyword_semantics.dart';
 import '../../highlight/node.dart';
-import '../../highlight/node_classes.dart';
 import '../foldable_block.dart';
 import '../foldable_block_type.dart';
 import 'abstract.dart';
@@ -64,6 +61,15 @@ class JinjaFoldableBlockParser extends AbstractFoldableBlockParser {
       subLanguageBlocks: subLanguageBlocks,
     );
     blocks.addAll(combinedBlocks);
+
+    print('[JINJA_PARSER_FINAL] Jinja blocks found: ${jinjaBlocks.length}');
+    print('[JINJA_PARSER_FINAL] SubLanguage blocks found: ${subLanguageBlocks.length}');
+    print('[JINJA_PARSER_FINAL] Combined blocks: ${blocks.length}');
+    for (var i = 0; i < blocks.length; i++) {
+      final block = blocks[i];
+      print('[JINJA_PARSER_FINAL] Final Block $i: lines ${block.firstLine}-${block.lastLine}, type=${block.type}');
+    }
+
     finalize();
   }
 
@@ -177,46 +183,60 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
     required Set<Object?> serviceCommentsSources,
     CodeLines lines = CodeLines.empty,
   }) {
+    print('[JINJA_PARSER] ========== STARTING JINJA PARSING ==========');
+    print('[JINJA_PARSER] Total nodes to process: ${highlighted.nodes?.length ?? 0}');
+    print('[JINJA_PARSER] Total lines: ${lines.length}');
+
     if (highlighted.nodes != null) {
       _processNodes(highlighted.nodes!, serviceCommentsSources);
     }
 
     submitCurrentLine(); // In case the last one did not end with '\n'.
     finalize();
+
+    print('[JINJA_PARSER] ========== FINISHED JINJA PARSING ==========');
+    print('[JINJA_PARSER] Total blocks created: ${blocks.length}');
+    print('[JINJA_PARSER] Total invalid blocks: ${invalidBlocks.length}');
+    for (var i = 0; i < blocks.length; i++) {
+      final block = blocks[i];
+      print('[JINJA_PARSER] Block $i: lines ${block.firstLine}-${block.lastLine}, type=${block.type}');
+    }
   }
 
   void _processNodes(List<Node> nodes, Set<Object?> serviceCommentsSources) {
-    for (final node in nodes) {
+    print('[JINJA_PARSER] _processNodes: Processing ${nodes.length} nodes');
+    for (var i = 0; i < nodes.length; i++) {
+      final node = nodes[i];
+      print('[JINJA_PARSER] _processNodes: Node $i/${nodes.length}');
       _processNode(node, serviceCommentsSources);
     }
   }
 
   void _processNode(Node node, Set<Object?> serviceCommentsSources) {
-    // Handle Jinja-specific class names
+    final nodeValue = node.value ?? '';
+    final nodeText = _getNodeText(node);
+    print(
+      '[JINJA_PARSER] Processing node: className="${node.className}", value="${nodeValue.substring(0, nodeValue.length > 50 ? 50 : nodeValue.length)}", fullText="${nodeText.substring(0, nodeText.length > 100 ? 100 : nodeText.length)}", lineIndex=$lineIndex',
+    );
+
+    // Handle ONLY Jinja-specific class names
+    // All other nodes (comments, keywords, strings, etc.) should be handled
+    // by the sublanguage parser (Java, JavaScript, etc.)
     switch (node.className) {
       case 'template-tag':
+        print('[JINJA_PARSER] → Routing to _processTemplateTag');
         _processTemplateTag(node, serviceCommentsSources);
         break;
 
       case 'template-variable':
+        print('[JINJA_PARSER] → Routing to _processTemplateVariable');
         _processTemplateVariable(node, serviceCommentsSources);
         break;
 
-      case NodeClasses.comment:
-        _processComment(node, serviceCommentsSources);
-        break;
-
-      case NodeClasses.keyword:
-        _processKeyword(node);
-        break;
-
-      case NodeClasses.string:
-        _processString(node);
-        break;
-
       default:
-        // For all other nodes, use default handling
-        // This includes standard braces, brackets, parentheses
+        // For all other nodes (including comments, keywords, strings, etc.),
+        // just track line numbers and delegate to sublanguage parser
+        print('[JINJA_PARSER] → Routing to _processDefault (className="${node.className}")');
         _processDefault(node, serviceCommentsSources);
     }
   }
@@ -228,36 +248,42 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
   void _processTemplateTag(Node node, Set<Object?> serviceCommentsSources) {
     final tagValue = _getNodeText(node);
     final newlineCount = node.getNewlineCount();
+    print('[JINJA_PARSER] _processTemplateTag: tagValue="$tagValue", newlineCount=$newlineCount, lineIndex=$lineIndex');
 
     // Check if this is an opening control structure tag
     final isOpeningTag = _isOpeningControlTag(tagValue);
     final isClosingTag = _isClosingControlTag(tagValue);
+    print('[JINJA_PARSER] _processTemplateTag: isOpeningTag=$isOpeningTag, isClosingTag=$isClosingTag');
 
     if (isOpeningTag) {
       // Start a block for control structures like {% for %}, {% if %}, etc.
+      print('[JINJA_PARSER] _processTemplateTag: Starting block at lineIndex=$lineIndex (opening tag)');
       startBlock(lineIndex, FoldableBlockType.braces);
-      _processDefault(node, serviceCommentsSources);
+      _processJinjaNodeValue(node, serviceCommentsSources);
       // Note: The block will be closed when we encounter the matching {% endfor %}, {% endif %}, etc.
       return;
     }
 
     if (isClosingTag) {
       // End the block for control structures
-      _processDefault(node, serviceCommentsSources);
+      print('[JINJA_PARSER] _processTemplateTag: Ending block at lineIndex=$lineIndex (closing tag)');
+      _processJinjaNodeValue(node, serviceCommentsSources);
       endBlock(lineIndex, FoldableBlockType.braces);
       return;
     }
 
     // For multi-line template tags (tags with newlines inside the tag itself)
     if (newlineCount > 0) {
+      print('[JINJA_PARSER] _processTemplateTag: Multi-line tag, starting/ending block at lineIndex=$lineIndex');
       startBlock(lineIndex, FoldableBlockType.braces);
-      _processDefault(node, serviceCommentsSources);
+      _processJinjaNodeValue(node, serviceCommentsSources);
       endBlock(lineIndex, FoldableBlockType.braces);
       return;
     }
 
-    // Single-line tag, process like default node (value + children)
-    _processDefault(node, serviceCommentsSources);
+    // Single-line tag, process without treating delimiter braces as code structure
+    print('[JINJA_PARSER] _processTemplateTag: Single-line tag, processing without block creation');
+    _processJinjaNodeValue(node, serviceCommentsSources);
   }
 
   String _getNodeText(Node node) {
@@ -347,94 +373,123 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
   /// Processes template variables `{{ ... }}` that span multiple lines.
   void _processTemplateVariable(Node node, Set<Object?> serviceCommentsSources) {
     final newlineCount = node.getNewlineCount();
+    final varValue = _getNodeText(node);
+    print('[JINJA_PARSER] _processTemplateVariable: varValue="$varValue", newlineCount=$newlineCount, lineIndex=$lineIndex');
 
     // Only create foldable blocks for multi-line template variables
     if (newlineCount == 0) {
-      // Single-line variable, process like default node (value + children)
-      _processDefault(node, serviceCommentsSources);
+      // Single-line variable, process without treating delimiter braces as code structure
+      print('[JINJA_PARSER] _processTemplateVariable: Single-line variable, processing without block creation');
+      _processJinjaNodeValue(node, serviceCommentsSources);
       return;
     }
 
     // Multi-line template variable - create foldable block
+    print('[JINJA_PARSER] _processTemplateVariable: Multi-line variable, starting block at lineIndex=$lineIndex');
     startBlock(lineIndex, FoldableBlockType.braces);
 
     // Process the node's value and children (this updates lineIndex)
-    _processDefault(node, serviceCommentsSources);
+    _processJinjaNodeValue(node, serviceCommentsSources);
 
+    print('[JINJA_PARSER] _processTemplateVariable: Ending block at lineIndex=$lineIndex');
     endBlock(lineIndex, FoldableBlockType.braces);
   }
 
-  // Duplicate methods from parent class to access private functionality
-  void _processComment(Node node, Set<Object?> serviceCommentsSources) {
-    final newlineCount = node.getNewlineCount();
-
-    if (foundNonWhitespace && newlineCount == 0) {
-      return;
-    }
-
-    if (serviceCommentsSources.contains(node)) {
-      return;
-    }
-
-    if (newlineCount == 0) {
-      setFoundSingleLineComment();
-      return;
-    }
-
-    startBlock(lineIndex, FoldableBlockType.multilineComment);
-
-    for (var i = 0; i < newlineCount; i++) {
-      setFoundMultilineComment();
-      submitCurrentLine();
-      addToLineIndex(1);
-    }
-
-    endBlock(lineIndex, FoldableBlockType.multilineComment);
-  }
-
-  void _processKeyword(Node node) {
-    final child = node.children?.firstOrNull;
-    if (child == null) {
-      return;
-    }
-
-    final semantics = node.keywordSemantics;
-
-    switch (semantics) {
-      case KeywordSemantics.import:
-        setFoundImport();
-        break;
-      case KeywordSemantics.possibleImport:
-        setFoundPossibleImport();
-        break;
-      case null:
-        setFoundImportTerminator();
-        break;
-    }
-  }
-
-  void _processString(Node node) {
-    final newlineCount = node.getNewlineCount();
-
-    setFoundNonWhitespace();
-    if (newlineCount > 0) {
-      setFoundImportTerminator();
-      submitCurrentLine();
-      clearLineFlags();
-    }
-
-    addToLineIndex(newlineCount);
-  }
-
   void _processDefault(Node node, Set<Object?> serviceCommentsSources) {
+    final nodeValue = node.value ?? '';
+    print(
+      '[JINJA_PARSER] _processDefault: Processing default node, value="${nodeValue.substring(0, nodeValue.length > 100 ? 100 : nodeValue.length)}", lineIndex=$lineIndex',
+    );
     _processDefaultValue(node);
 
     if (node.children != null) {
+      print('[JINJA_PARSER] _processDefault: Processing ${node.children!.length} children');
       _processNodes(node.children!, serviceCommentsSources);
     }
   }
 
+  /// Processes Jinja node value without treating delimiter braces as code structure.
+  /// This prevents Jinja delimiters {% ... %} and {{ ... }} from creating incorrect foldable blocks.
+  void _processJinjaNodeValue(Node node, Set<Object?> serviceCommentsSources) {
+    final value = node.value ?? '';
+    print(
+      '[JINJA_PARSER] _processJinjaNodeValue: value="${value.substring(0, value.length > 100 ? 100 : value.length)}", hasChildren=${node.children != null}, childrenCount=${node.children?.length ?? 0}',
+    );
+
+    if (value.isNotEmpty) {
+      _processJinjaValue(value);
+    }
+
+    if (node.children != null) {
+      print('[JINJA_PARSER] _processJinjaNodeValue: Processing ${node.children!.length} children recursively');
+      for (final child in node.children!) {
+        _processJinjaNodeValue(child, serviceCommentsSources);
+      }
+    }
+  }
+
+  /// Processes a Jinja node's value, handling newlines and whitespace
+  /// but NOT treating braces as code structure (since they're Jinja delimiters).
+  void _processJinjaValue(String value) {
+    var braceCount = 0;
+    var bracketCount = 0;
+    var parenCount = 0;
+
+    for (final code in value.runes) {
+      switch (code) {
+        case $space:
+        case $tab:
+        case $cr:
+        case $lf:
+          break;
+        default:
+          setFoundNonWhitespace();
+      }
+
+      // Track braces/brackets/parentheses to see what we're skipping
+      if (code == $openBrace) {
+        braceCount++;
+        print('[JINJA_PARSER] _processJinjaValue: Found { (skipping, braceCount=$braceCount)');
+      } else if (code == $closeBrace) {
+        braceCount--;
+        print('[JINJA_PARSER] _processJinjaValue: Found } (skipping, braceCount=$braceCount)');
+      } else if (code == $openBracket) {
+        bracketCount++;
+        print('[JINJA_PARSER] _processJinjaValue: Found [ (skipping, bracketCount=$bracketCount)');
+      } else if (code == $closeBracket) {
+        bracketCount--;
+        print('[JINJA_PARSER] _processJinjaValue: Found ] (skipping, bracketCount=$bracketCount)');
+      } else if (code == $openParenthesis) {
+        parenCount++;
+        print('[JINJA_PARSER] _processJinjaValue: Found ( (skipping, parenCount=$parenCount)');
+      } else if (code == $closeParenthesis) {
+        parenCount--;
+        print('[JINJA_PARSER] _processJinjaValue: Found ) (skipping, parenCount=$parenCount)');
+      }
+
+      // Only handle newlines, not braces/brackets/parentheses
+      // (those are part of Jinja delimiters, not code structure)
+      if (code == $lf) {
+        print('[JINJA_PARSER] _processJinjaValue: Found newline, submitting line and incrementing lineIndex');
+        submitCurrentLine();
+        clearLineFlags();
+        addToLineIndex(1);
+      }
+    }
+
+    if (braceCount != 0 || bracketCount != 0 || parenCount != 0) {
+      print(
+        '[JINJA_PARSER] _processJinjaValue: WARNING - Unbalanced delimiters: braces=$braceCount, brackets=$bracketCount, parens=$parenCount',
+      );
+    }
+  }
+
   /// Except: comment, keyword, string
+  ///
+  /// Note: This method ONLY handles newlines and whitespace.
+  /// It does NOT create foldable blocks for braces, brackets, or parentheses
+  /// because those are part of the sublanguage (Java, etc.) and should be
+  /// handled by the sublanguage parser, not the Jinja parser.
   void _processDefaultValue(Node node) {
     final value = node.value;
     if (value == null) {
@@ -452,36 +507,12 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
           setFoundNonWhitespace();
       }
 
-      switch (code) {
-        case $lf: // Newline
-          submitCurrentLine();
-          clearLineFlags();
-          addToLineIndex(1);
-          break;
-
-        case $openParenthesis: // (
-          startBlock(lineIndex, FoldableBlockType.parentheses);
-          break;
-
-        case $closeParenthesis: // )
-          endBlock(lineIndex, FoldableBlockType.parentheses);
-          break;
-
-        case $openBracket: // [
-          startBlock(lineIndex, FoldableBlockType.brackets);
-          break;
-
-        case $closeBracket: // ]
-          endBlock(lineIndex, FoldableBlockType.brackets);
-          break;
-
-        case $openBrace: // {
-          startBlock(lineIndex, FoldableBlockType.braces);
-          break;
-
-        case $closeBrace: // }
-          endBlock(lineIndex, FoldableBlockType.braces);
-          break;
+      // Only handle newlines - let the sublanguage parser handle code structure
+      if (code == $lf) {
+        print('[JINJA_PARSER] _processDefaultValue: Found newline at lineIndex=$lineIndex');
+        submitCurrentLine();
+        clearLineFlags();
+        addToLineIndex(1);
       }
     }
   }

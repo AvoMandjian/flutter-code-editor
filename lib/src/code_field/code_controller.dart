@@ -119,6 +119,10 @@ class CodeController extends TextEditingController {
 
   final breakpoints = <int>{};
 
+  /// The foldable block that contains the current cursor position.
+  /// This is used to highlight the opening and closing lines of the block.
+  FoldableBlock? highlightedBlock;
+
   SearchSettingsController get _searchSettingsController => searchController.settingsController;
 
   SearchNavigationController get _searchNavigationController => searchController.navigationController;
@@ -526,7 +530,80 @@ class CodeController extends TextEditingController {
       unawaited(generateSuggestions());
     } else if (hasSelectionChanged) {
       popupController.hide();
+      _updateHighlightedBlock();
     }
+
+    if (hasTextChanged) {
+      _updateHighlightedBlock();
+    }
+  }
+
+  /// Updates the highlighted block based on the current cursor position.
+  void _updateHighlightedBlock() {
+    final cursorLine = _getCursorLine();
+    if (cursorLine == null) {
+      if (highlightedBlock != null) {
+        print('[BLOCK_HIGHLIGHT] Cursor not on any line, clearing highlighted block');
+      }
+      highlightedBlock = null;
+      notifyListeners();
+      return;
+    }
+
+    // Find all blocks that contain the cursor line
+    final containingBlocks = _code.foldableBlocks.where((block) => block.firstLine <= cursorLine && cursorLine <= block.lastLine).toList();
+
+    if (containingBlocks.isEmpty) {
+      if (highlightedBlock != null) {
+        print('[BLOCK_HIGHLIGHT] Cursor at line $cursorLine, no containing blocks, clearing highlight');
+        highlightedBlock = null;
+        notifyListeners();
+      }
+      return;
+    }
+
+    // Find the innermost block (the one that is contained by all others)
+    FoldableBlock? innermostBlock;
+    for (final block in containingBlocks) {
+      // Check if this block is contained by all other containing blocks
+      final isInnermost = containingBlocks.every(
+        (other) => other == block || other.includes(block),
+      );
+
+      if (isInnermost) {
+        innermostBlock = block;
+        break;
+      }
+    }
+
+    // If no block is contained by all others, pick the one with the smallest range
+    if (innermostBlock == null && containingBlocks.isNotEmpty) {
+      innermostBlock = containingBlocks.reduce(
+        (a, b) => (a.lastLine - a.firstLine) < (b.lastLine - b.firstLine) ? a : b,
+      );
+    }
+
+    if (highlightedBlock != innermostBlock) {
+      if (innermostBlock != null) {
+        print(
+            '[BLOCK_HIGHLIGHT] Cursor at line $cursorLine, highlighting block: lines ${innermostBlock.firstLine}-${innermostBlock.lastLine}, type=${innermostBlock.type}');
+      }
+      highlightedBlock = innermostBlock;
+      notifyListeners();
+    }
+  }
+
+  /// Gets the line number (0-based) of the current cursor position.
+  int? _getCursorLine() {
+    final selection = this.selection;
+    if (selection.start == -1) {
+      return null;
+    }
+
+    // Get the full text selection (accounting for hidden ranges)
+    final fullSelection = _code.hiddenRanges.recoverSelection(selection);
+    final textBeforeCursor = _code.text.substring(0, fullSelection.start);
+    return textBeforeCursor.split('\n').length - 1;
   }
 
   void applyHistoryRecord(CodeHistoryRecord record) {
@@ -964,6 +1041,8 @@ class CodeController extends TextEditingController {
         code: _code,
         theme: _getTheme(context),
         rootStyle: style,
+        issues: analysisResult.issues,
+        highlightedBlock: highlightedBlock,
       ).build();
     }
 

@@ -1,5 +1,11 @@
 const javaTemplateSource = '''
-$templateSource
+{% set dealershipName = dealership.name %}
+{% set dealershipAddress = dealership.address %}
+
+{% for i in [0,1,2,3]%}
+  {{ dealershipName }} {{ i }}
+{% endfor %}
+
 public class AgentCommunication {
     // Simulates agent-like communication between two 'agents'.
     // Mirrors Flutter A2A widget interop where one calls a method on another and gets a result.
@@ -25,6 +31,28 @@ public class AgentCommunication {
         System.out.println("Agent B returned: " + output);
     }
 }
+
+
+{% for i in [0,1,2,3]%}
+  {{ dealershipName }} {{ i }}
+{% endfor %}
+
+
+
+    public static void main(String[] args) {
+        // Agent B's processor (lambda simulates Agent B)
+        AgentProcessor receiverProcess = data -> data.toUpperCase() + " PROCESSED BY AGENT B";
+        {% for i in [0,1,2,3]%}
+          {{ dealershipName }} {{ i }}
+        {% endfor %}
+        // Agent A calls Agent B
+        String inputData = "hello from agent A";
+        String output = agentCommunicate(inputData, receiverProcess);
+        
+        System.out.println("Agent A sent: " + inputData);
+        System.out.println("Agent B returned: " + output);
+    }
+
 ''';
 const templateSource = '''
 {% set dealershipName = dealership.name %}
