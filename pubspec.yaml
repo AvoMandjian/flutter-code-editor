@@ -2,6 +2,7 @@ name: flutter_code_editor
 description: A customizable code field supporting syntax highlighting and code folding.
 version: 0.3.4
 repository: https://github.com/akvelon/flutter-code-editor
+publish_to: "none"
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
@@ -15,9 +16,13 @@ dependencies:
   equatable: ^2.0.5
   flutter: { sdk: flutter }
   flutter_highlight:
-    path: packages/highlight_with_jinja/flutter_highlight
+    git:
+      url: git@git.jinja.app:jinja.app/jinja_flutter_highlight.git
+      ref: dev
   highlight:
-    path: packages/highlight_with_jinja/highlight
+    git:
+      url: git@git.jinja.app:jinja.app/jinja_highlight.git
+      ref: dev
   http: ^1.1.0
   linked_scroll_controller: ^0.2.0
   meta: ^1.9.1
