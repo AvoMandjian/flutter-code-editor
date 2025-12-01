@@ -254,6 +254,11 @@ class CodeController extends TextEditingController {
     }
 
     analysisResult = result;
+    // print('CodeController: Analysis finished. Issues found: ${analysisResult.issues.length}');
+    // for (final issue in analysisResult.issues) {
+    //   print('Issue found at line ${issue.line}: ${issue.message}');
+    // }
+
     _lastAnalyzedText = codeSentToAnalysis.text;
     notifyListeners();
   }
@@ -964,11 +969,14 @@ class CodeController extends TextEditingController {
   }) {
     // Return parsing
     if (_language != null) {
+      // print('CodeController: Building TextSpan. Issues count: ${analysisResult.issues.length}');
+      // print('CodeController: Building TextSpan. Issues count: ${analysisResult.issues.length}');
       return SpanBuilder(
         code: _code,
         theme: _getTheme(context),
         rootStyle: style,
         cursorPosition: selection.start,
+        issues: analysisResult.issues,
       ).build();
     }
 

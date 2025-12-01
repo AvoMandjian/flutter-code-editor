@@ -253,6 +253,7 @@ void main() {
           code: code,
           theme: _themeData,
           rootStyle: _default,
+          issues: [],
         );
         final result = builder.build();
 

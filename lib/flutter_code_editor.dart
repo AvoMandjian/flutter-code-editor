@@ -1,6 +1,9 @@
 export 'src/analyzer/abstract.dart';
 export 'src/analyzer/dartpad_analyzer.dart';
 export 'src/analyzer/default_analyzer.dart';
+export 'src/analyzer/local_analyzer.dart';
+export 'src/analyzer/rules/pattern_rule.dart';
+export 'src/analyzer/rules/rule.dart';
 export 'src/analyzer/models/analysis_result.dart';
 export 'src/analyzer/models/issue.dart';
 export 'src/analyzer/models/issue_type.dart';

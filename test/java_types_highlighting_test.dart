@@ -22,5 +22,6 @@ SpanBuilder _createTestSpanBuilder() {
   return SpanBuilder(
     code: code,
     theme: null,
+    issues: [],
   );
 }

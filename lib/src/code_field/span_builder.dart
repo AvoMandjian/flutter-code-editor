@@ -6,6 +6,7 @@ import '../code/text_style.dart';
 import '../code_theme/code_theme_data.dart';
 import '../folding/foldable_block.dart';
 import '../highlight/node.dart';
+import '../analyzer/models/issue.dart';
 import '../highlight/node_classes.dart';
 
 /// Background color for highlighting block boundary tags (start and end tags of foldable blocks).
@@ -18,6 +19,7 @@ class SpanBuilder {
   final CodeThemeData? theme;
   final TextStyle? rootStyle;
   final int? cursorPosition;
+  final List<Issue> issues;
 
   var _visibleLineIndex = 0;
   late final Set<FoldableBlock> _blocksContainingCursor;
@@ -27,6 +29,7 @@ class SpanBuilder {
     required this.theme,
     this.rootStyle,
     this.cursorPosition,
+    required this.issues,
   }) {
     _blocksContainingCursor = _computeBlocksContainingCursor();
   }
@@ -166,9 +169,15 @@ class SpanBuilder {
     _updateLineIndex(node);
 
     // Apply background color to relevant nodes on boundary lines
-    final processedStyle = _applyBlockBoundaryHighlight(
+    var processedStyle = _applyBlockBoundaryHighlight(
       _paleIfRequired(style),
       shouldHighlight,
+    );
+
+    // Apply error underline if the line has an issue
+    processedStyle = _applyErrorHighlight(
+      processedStyle,
+      fullLineBeforeUpdate,
     );
 
     return TextSpan(
@@ -180,6 +189,22 @@ class SpanBuilder {
       ),
       style: processedStyle,
     );
+  }
+
+  TextStyle? _applyErrorHighlight(TextStyle? style, int lineIndex) {
+    if (issues.any((issue) => issue.line == lineIndex)) {
+      return style?.copyWith(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.wavy,
+            decorationColor: Colors.red,
+          ) ??
+          const TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.wavy,
+            decorationColor: Colors.red,
+          );
+    }
+    return style;
   }
 
   /// Checks if the given text contains built-in type names for the current language
