@@ -6,4 +6,5 @@ abstract class NodeClasses {
   static const params = 'params';
   static const type = 'type';
   static const meta = 'meta';
+  static const templateTag = 'template-tag';
 }

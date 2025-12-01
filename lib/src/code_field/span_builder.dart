@@ -139,54 +139,22 @@ class SpanBuilder {
 
     if (_blocksContainingCursor.isEmpty) {
       _updateLineIndex(node);
+      final paleStyle = _paleIfRequired(style);
       return TextSpan(
         text: node.value,
         children: _buildList(
           nodes: node.children,
           theme: theme,
-          ancestorStyle: _paleIfRequired(style),
+          ancestorStyle: paleStyle,
         ),
-        style: _paleIfRequired(style),
+        style: paleStyle,
       );
     }
 
-    final blockFirstLines = _getBlockFirstLines();
-    final blockLastLines = _getBlockLastLines();
-    final isOnFirstLine = blockFirstLines.contains(fullLineBeforeUpdate);
-    final isOnLastLine = blockLastLines.contains(fullLineBeforeUpdate);
-
-    // Check if this should be highlighted:
-    // 1. Jinja template-tag nodes on boundary lines
-    // 2. Keywords on first lines of blocks (for subLanguage like Java)
-    // 3. Opening braces { on first lines of blocks
-    // 4. Closing braces } on last lines of blocks
-    final isTemplateTag = node.className == 'template-tag';
-    final isKeyword = node.className == NodeClasses.keyword;
-    final isTitle = node.className == NodeClasses.title;
-    final isType = node.className == NodeClasses.type;
-    final isParams = node.className == NodeClasses.params;
-    final isMeta = node.className == NodeClasses.meta;
-    final nodeValue = (node.value ?? '').trim();
-    final hasOpenBrace = nodeValue.contains('{');
-    final hasCloseBrace = nodeValue.contains('}');
-
-    bool shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
-        (isKeyword && isOnFirstLine) ||
-        (isTitle && isOnFirstLine) ||
-        (isType && isOnFirstLine) ||
-        (isParams && isOnFirstLine) ||
-        (isMeta && isOnFirstLine) ||
-        (hasOpenBrace && isOnFirstLine) ||
-        (_containsLanguageBuiltInTypes(nodeValue) && isOnFirstLine) ||
-        (nodeValue.isEmpty && isOnFirstLine && !isTemplateTag) ||
-        (hasCloseBrace && isOnLastLine);
-
-    // Special handling for Java built-in types within parameter lists on foldable block boundaries
-    // Some highlighting libraries don't assign 'type' class to built-in types like String, Integer
-    // We only apply this enhancement when there are foldable blocks to highlight boundaries
-    if (code.foldableBlocks.isNotEmpty && !shouldHighlight && isOnFirstLine && isParams) {
-      shouldHighlight = true;
-    }
+    final shouldHighlight = _shouldHighlightNode(
+      node: node,
+      fullLineBeforeUpdate: fullLineBeforeUpdate,
+    );
 
     if (shouldHighlight) {
       // Optional: You can uncomment the following for debugging highlighting behavior
@@ -221,14 +189,69 @@ class SpanBuilder {
 
     // Define built-in types for different languages
     final builtInTypes = _getBuiltInTypes(currentLanguage);
+    if (builtInTypes.isEmpty) {
+      return false;
+    }
 
-    // Check if the text contains any of the built-in type names
-    for (final type in builtInTypes) {
-      if (text.trim().toLowerCase().contains(type.trim().toLowerCase())) {
+    // Use word-based matching to avoid false positives (e.g. "int" in "print").
+    // Tokenize by word characters and check membership in a lowercased set.
+    final lowerCasedTypes = builtInTypes.map((type) => type.trim().toLowerCase()).where((type) => type.isNotEmpty).toSet();
+
+    final wordRegExp = RegExp(r'\w+');
+    for (final match in wordRegExp.allMatches(text)) {
+      final token = match.group(0)?.toLowerCase();
+      if (token != null && lowerCasedTypes.contains(token)) {
         return true;
       }
     }
+
     return false;
+  }
+
+  bool _shouldHighlightNode({
+    required Node node,
+    required int fullLineBeforeUpdate,
+  }) {
+    final blockFirstLines = _getBlockFirstLines();
+    final blockLastLines = _getBlockLastLines();
+    final isOnFirstLine = blockFirstLines.contains(fullLineBeforeUpdate);
+    final isOnLastLine = blockLastLines.contains(fullLineBeforeUpdate);
+
+    // Check if this should be highlighted:
+    // 1. Jinja template-tag nodes on boundary lines
+    // 2. Keywords on first lines of blocks (for subLanguage like Java)
+    // 3. Opening braces { on first lines of blocks
+    // 4. Closing braces } on last lines of blocks
+    final className = node.className;
+    final isTemplateTag = className == NodeClasses.templateTag;
+    final isKeyword = className == NodeClasses.keyword;
+    final isTitle = className == NodeClasses.title;
+    final isType = className == NodeClasses.type;
+    final isParams = className == NodeClasses.params;
+    final isMeta = className == NodeClasses.meta;
+    final nodeValue = (node.value ?? '').trim();
+    final hasOpenBrace = nodeValue.contains('{');
+    final hasCloseBrace = nodeValue.contains('}');
+
+    var shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
+        (isKeyword && isOnFirstLine) ||
+        (isTitle && isOnFirstLine) ||
+        (isType && isOnFirstLine) ||
+        (isParams && isOnFirstLine) ||
+        (isMeta && isOnFirstLine) ||
+        (hasOpenBrace && isOnFirstLine) ||
+        (_containsLanguageBuiltInTypes(nodeValue) && isOnFirstLine) ||
+        (nodeValue.isEmpty && isOnFirstLine && !isTemplateTag) ||
+        (hasCloseBrace && isOnLastLine);
+
+    // Special handling for Java built-in types within parameter lists on foldable block boundaries
+    // Some highlighting libraries don't assign 'type' class to built-in types like String, Integer
+    // We only apply this enhancement when there are foldable blocks to highlight boundaries
+    if (code.foldableBlocks.isNotEmpty && !shouldHighlight && isOnFirstLine && isParams) {
+      shouldHighlight = true;
+    }
+
+    return shouldHighlight;
   }
 
   /// Applies background color highlighting if this is a template-tag on a block boundary.
@@ -298,7 +321,7 @@ const _javaTypes = {
   'TreeMap',
   'Set',
   'HashSet',
-  'Treeet',
+  'TreeSet',
   'LinkedHashSet',
   'Collection',
   'Iterable',
