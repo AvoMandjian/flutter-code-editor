@@ -154,18 +154,26 @@ class SpanBuilder {
     // 4. Closing braces } on last lines of blocks
     final isTemplateTag = node.className == 'template-tag';
     final isKeyword = node.className == NodeClasses.keyword;
+    final isTitle = node.className == NodeClasses.title;
+    final isType = node.className == NodeClasses.type;
+    final isParams = node.className == NodeClasses.params;
+    final isMeta = node.className == NodeClasses.meta;
     final nodeValue = node.value ?? '';
     final hasOpenBrace = nodeValue.contains('{');
     final hasCloseBrace = nodeValue.contains('}');
 
     final shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
         (isKeyword && isOnFirstLine) ||
+        (isTitle && isOnFirstLine) ||
+        (isType && isOnFirstLine) ||
+        (isParams && isOnFirstLine) ||
+        (isMeta && isOnFirstLine) ||
         (hasOpenBrace && isOnFirstLine) ||
         (hasCloseBrace && isOnLastLine);
 
     if (shouldHighlight) {
-      String actualValue = node.value ?? (node.children?.map((e) => e.value ?? '').join('') ?? '');
-      final valueLog = actualValue.isEmpty ? 'null (container)' : '"${actualValue.replaceAll('\n', '\\n')}"';
+      final String actualValue = node.value ?? (node.children?.map((e) => e.value ?? '').join() ?? '');
+      final valueLog = actualValue.isEmpty ? 'null (container)' : '"${actualValue.replaceAll('\n', r'\n')}"';
       print('Highlighting node: class="${node.className}", value=$valueLog at line $fullLineBeforeUpdate');
     }
 
