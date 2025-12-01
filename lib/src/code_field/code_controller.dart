@@ -964,6 +964,7 @@ class CodeController extends TextEditingController {
         code: _code,
         theme: _getTheme(context),
         rootStyle: style,
+        cursorPosition: selection.start,
       ).build();
     }
 

@@ -1,23 +1,91 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:highlight/highlight_core.dart';
 
 import '../code/code.dart';
 import '../code/text_style.dart';
 import '../code_theme/code_theme_data.dart';
+import '../folding/foldable_block.dart';
 import '../highlight/node.dart';
+import '../highlight/node_classes.dart';
+
+/// Background color for highlighting block boundary tags (start and end tags of foldable blocks).
+/// Uses a darker blue with good contrast for both light and dark themes.
+@visibleForTesting
+const blockBoundaryBackgroundColor = Color.fromARGB(255, 30, 60, 100);
 
 class SpanBuilder {
   final Code code;
   final CodeThemeData? theme;
   final TextStyle? rootStyle;
+  final int? cursorPosition;
 
   var _visibleLineIndex = 0;
+  late final Set<FoldableBlock> _blocksContainingCursor;
 
   SpanBuilder({
     required this.code,
     required this.theme,
     this.rootStyle,
-  });
+    this.cursorPosition,
+  }) {
+    _blocksContainingCursor = _computeBlocksContainingCursor();
+  }
+
+  /// Finds all blocks that contain the cursor position.
+  Set<FoldableBlock> _computeBlocksContainingCursor() {
+    if (cursorPosition == null || cursorPosition! < 0) {
+      return {};
+    }
+
+    // Handle empty code
+    if (code.text.isEmpty || code.lines.lines.isEmpty) {
+      return {};
+    }
+
+    // Convert visible cursor position to full text position
+    final fullCursorPosition = code.hiddenRanges.recoverPosition(
+      cursorPosition!,
+      placeHiddenRanges: TextAffinity.downstream,
+    );
+
+    // Validate the recovered position is within bounds
+    if (fullCursorPosition < 0 || fullCursorPosition > code.text.length) {
+      return {};
+    }
+
+    // Convert character position to line index
+    int cursorLine;
+    try {
+      cursorLine = code.lines.characterIndexToLineIndex(fullCursorPosition);
+      // Ensure the line index is valid
+      if (cursorLine < 0 || cursorLine >= code.lines.lines.length) {
+        return {};
+      }
+    } catch (e) {
+      // If conversion fails, return empty set (no highlighting)
+      return {};
+    }
+
+    // Find all blocks that contain this line
+    final containingBlocks = <FoldableBlock>{};
+    for (final block in code.foldableBlocks) {
+      if (block.firstLine <= cursorLine && cursorLine <= block.lastLine) {
+        containingBlocks.add(block);
+      }
+    }
+
+    return containingBlocks;
+  }
+
+  /// Gets the set of first lines of blocks containing the cursor.
+  Set<int> _getBlockFirstLines() {
+    return _blocksContainingCursor.map((block) => block.firstLine).toSet();
+  }
+
+  /// Gets the set of last lines of blocks containing the cursor.
+  Set<int> _getBlockLastLines() {
+    return _blocksContainingCursor.map((block) => block.lastLine).toSet();
+  }
 
   TextSpan build() {
     _visibleLineIndex = 0;
@@ -57,9 +125,57 @@ class SpanBuilder {
     TextStyle? ancestorStyle,
   }) {
     final style = theme?.styles[node.className] ?? ancestorStyle;
-    final processedStyle = _paleIfRequired(style);
+
+    // Get the current full line index before updating
+    final fullLineBeforeUpdate = code.hiddenLineRanges.recoverLineIndex(_visibleLineIndex);
+
+    if (_blocksContainingCursor.isEmpty) {
+      _updateLineIndex(node);
+      return TextSpan(
+        text: node.value,
+        children: _buildList(
+          nodes: node.children,
+          theme: theme,
+          ancestorStyle: _paleIfRequired(style),
+        ),
+        style: _paleIfRequired(style),
+      );
+    }
+
+    final blockFirstLines = _getBlockFirstLines();
+    final blockLastLines = _getBlockLastLines();
+    final isOnFirstLine = blockFirstLines.contains(fullLineBeforeUpdate);
+    final isOnLastLine = blockLastLines.contains(fullLineBeforeUpdate);
+
+    // Check if this should be highlighted:
+    // 1. Jinja template-tag nodes on boundary lines
+    // 2. Keywords on first lines of blocks (for subLanguage like Java)
+    // 3. Opening braces { on first lines of blocks
+    // 4. Closing braces } on last lines of blocks
+    final isTemplateTag = node.className == 'template-tag';
+    final isKeyword = node.className == NodeClasses.keyword;
+    final nodeValue = node.value ?? '';
+    final hasOpenBrace = nodeValue.contains('{');
+    final hasCloseBrace = nodeValue.contains('}');
+
+    final shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
+        (isKeyword && isOnFirstLine) ||
+        (hasOpenBrace && isOnFirstLine) ||
+        (hasCloseBrace && isOnLastLine);
+
+    if (shouldHighlight) {
+      String actualValue = node.value ?? (node.children?.map((e) => e.value ?? '').join('') ?? '');
+      final valueLog = actualValue.isEmpty ? 'null (container)' : '"${actualValue.replaceAll('\n', '\\n')}"';
+      print('Highlighting node: class="${node.className}", value=$valueLog at line $fullLineBeforeUpdate');
+    }
 
     _updateLineIndex(node);
+
+    // Apply background color to relevant nodes on boundary lines
+    final processedStyle = _applyBlockBoundaryHighlight(
+      _paleIfRequired(style),
+      shouldHighlight,
+    );
 
     return TextSpan(
       text: node.value,
@@ -70,6 +186,20 @@ class SpanBuilder {
       ),
       style: processedStyle,
     );
+  }
+
+  /// Applies background color highlighting if this is a template-tag on a block boundary.
+  TextStyle? _applyBlockBoundaryHighlight(TextStyle? style, bool shouldHighlight) {
+    if (!shouldHighlight) {
+      return style;
+    }
+
+    return style?.copyWith(
+          backgroundColor: blockBoundaryBackgroundColor,
+        ) ??
+        const TextStyle(
+          backgroundColor: blockBoundaryBackgroundColor,
+        );
   }
 
   void _updateLineIndex(Node node) {
@@ -85,8 +215,7 @@ class SpanBuilder {
       return style;
     }
 
-    final fullLineIndex =
-        code.hiddenLineRanges.recoverLineIndex(_visibleLineIndex);
+    final fullLineIndex = code.hiddenLineRanges.recoverLineIndex(_visibleLineIndex);
     if (code.lines[fullLineIndex].isReadOnly) {
       return style?.paled();
     }
