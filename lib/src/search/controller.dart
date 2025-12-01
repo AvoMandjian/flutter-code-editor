@@ -25,8 +25,7 @@ class CodeSearchController extends ChangeNotifier {
   bool get shouldShow => _shouldShow;
   var _shouldShow = false;
 
-  final settingsController =
-      SearchSettingsController();
+  final settingsController = SearchSettingsController();
   final SearchNavigationController navigationController;
 
   FocusNode? get codeFieldFocusNode => _codeFieldFocusNode;
@@ -45,8 +44,7 @@ class CodeSearchController extends ChangeNotifier {
 
   CodeSearchController({
     required CodeController codeController,
-  }) : navigationController =
-            SearchNavigationController(codeController: codeController) {
+  }) : navigationController = SearchNavigationController(codeController: codeController) {
     patternFocusNode.addListener(_onFocusChange);
   }
 
@@ -122,8 +120,7 @@ class CodeSearchController extends ChangeNotifier {
       return KeyEventResult.handled;
     }
 
-    if ((event is KeyDownEvent || event is KeyRepeatEvent) &&
-        event.logicalKey == LogicalKeyboardKey.enter) {
+    if ((event is KeyDownEvent || event is KeyRepeatEvent) && event.logicalKey == LogicalKeyboardKey.enter) {
       unawaited(_onEnterKeyPressed());
       return KeyEventResult.handled;
     }
@@ -160,8 +157,7 @@ class CodeSearchController extends ChangeNotifier {
       return;
     }
 
-    final shouldDismiss =
-        !patternFocusNode.hasFocus && _codeFieldFocusNode?.hasFocus == false;
+    final shouldDismiss = !patternFocusNode.hasFocus && _codeFieldFocusNode?.hasFocus == false;
 
     if (shouldDismiss) {
       hideSearch(returnFocusToCodeField: false);

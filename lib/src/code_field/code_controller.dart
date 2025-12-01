@@ -808,7 +808,11 @@ class CodeController extends TextEditingController {
       text: text,
       language: language,
       subLanguage: subLanguage,
-      highlighted: highlight.parse(text, language: _languageId, subLanguage: subLanguage),
+      highlighted: highlight.parse(
+        text,
+        language: _languageId,
+        subLanguage: subLanguage,
+      ),
       namedSectionParser: namedSectionParser,
       readOnlySectionNames: _readOnlySectionNames,
       visibleSectionNames: _visibleSectionNames,

@@ -12,7 +12,10 @@ import 'jinja.dart';
 import 'python.dart';
 
 class FoldableBlockParserFactory {
-  static AbstractFoldableBlockParser provideParser(Mode mode, {String? subLanguage}) {
+  static AbstractFoldableBlockParser provideParser(
+    Mode mode, {
+    String? subLanguage,
+  }) {
     if (mode == python) {
       return PythonFoldableBlockParser();
     }

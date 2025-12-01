@@ -1,6 +1,6 @@
 {
   "session_id": "94393d47-2bc8-47fc-b500-3bcd992e9225",
-  "last_saved": "2025-12-01T13:34:36.344572Z",
+  "last_saved": "2025-12-01T14:45:48.896810Z",
   "working_directory": "/Users/avo/Documents/Workplace/Projects/forked_projects/flutter-code-editor",
   "project_context": {
     "project_name": "unknown",
@@ -12,9 +12,9 @@
   "file_history": [],
   "tokenization_rules": {
     "target": 130,
-    ".git": 129,
     "node_modules": 128,
-    "dist": 131
+    "dist": 131,
+    ".git": 129
   },
   "insights": [],
   "philosophy": {

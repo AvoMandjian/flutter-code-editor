@@ -80,7 +80,10 @@ class Code {
     if (highlighted == null || language == null) {
       foldableBlocks = const [];
     } else {
-      final parser = FoldableBlockParserFactory.provideParser(language, subLanguage: subLanguage);
+      final parser = FoldableBlockParserFactory.provideParser(
+        language,
+        subLanguage: subLanguage,
+      );
 
       parser.parse(
         highlighted: highlighted,

@@ -88,7 +88,10 @@ class GutterWidget extends StatelessWidget {
     );
   }
 
-  void _fillLineNumbers(List<TableRow> tableRows, Map<int, ValueNotifier<bool>> valueNotifierIsHovered) {
+  void _fillLineNumbers(
+    List<TableRow> tableRows,
+    Map<int, ValueNotifier<bool>> valueNotifierIsHovered,
+  ) {
     final code = codeController.code;
 
     for (final i in code.hiddenLineRanges.visibleLineNumbers) {
@@ -166,7 +169,10 @@ class GutterWidget extends StatelessWidget {
     }
   }
 
-  void _fillBreakpoints(List<TableRow> tableRows, Map<int, ValueNotifier<bool>> valueNotifierIsHovered) {
+  void _fillBreakpoints(
+    List<TableRow> tableRows,
+    Map<int, ValueNotifier<bool>> valueNotifierIsHovered,
+  ) {
     final code = codeController.code;
 
     for (final i in code.hiddenLineRanges.visibleLineNumbers) {

@@ -5,13 +5,13 @@ import '../../util/enums.dart';
 
 class PopupController extends ChangeNotifier {
   late List<String> suggestions;
-  int _selectedIndex = 0;
-  bool shouldShow = false;
-  bool enabled = true;
+  var _selectedIndex = 0;
+  var shouldShow = false;
+  var enabled = true;
   PopupWordType? wordType;
 
-  final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final itemScrollController = ItemScrollController();
+  final itemPositionsListener = ItemPositionsListener.create();
 
   /// Should be called when an active list item is selected to be inserted into the text
   late final void Function({
@@ -19,7 +19,10 @@ class PopupController extends ChangeNotifier {
   }) onCompletionSelected;
   void Function(String word, PopupWordType? wordType) onInsertSelectedWord;
 
-  PopupController({required this.onCompletionSelected, required this.onInsertSelectedWord}) : super();
+  PopupController({
+    required this.onCompletionSelected,
+    required this.onInsertSelectedWord,
+  }) : super();
 
   set selectedIndex(int value) {
     _selectedIndex = value;

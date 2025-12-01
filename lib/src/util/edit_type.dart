@@ -10,4 +10,3 @@ enum EditType {
   /// like replacing an unselected text in one action.
   other,
 }
-

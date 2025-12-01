@@ -255,7 +255,11 @@ class _CodeFieldState extends State<CodeField> {
     if (widget.customThemes != null) {
       for (final entry in widget.customThemes!.entries) {
         themeMap.addAll({
-          entry.key: getThemeById(Map<String, Map<String, dynamic>>.from(jsonDecode(jsonEncode(entry.value)))),
+          entry.key: getThemeById(
+            Map<String, Map<String, dynamic>>.from(
+              jsonDecode(jsonEncode(entry.value)),
+            ),
+          ),
         });
       }
     }
@@ -702,53 +706,181 @@ FontWeight getFontWeight(String style) {
   }
 }
 
-Map<String, TextStyle> getThemeById(Map<String, Map<String, dynamic>> customThemes) {
+Map<String, TextStyle> getThemeById(
+  Map<String, Map<String, dynamic>> customThemes,
+) {
   return {
     'root': TextStyle(
-      backgroundColor: Color(int.parse(customThemes['root']?['backgroundColor'] ?? '0xffffffff')),
+      backgroundColor: Color(
+        int.parse(customThemes['root']?['backgroundColor'] ?? '0xffffffff'),
+      ),
       color: Color(int.parse(customThemes['root']?['color'] ?? '0xff000000')),
     ),
-    'comment': TextStyle(color: Color(int.parse(customThemes['comment']?['color'] ?? '0xff008000'))),
-    'quote': TextStyle(color: Color(int.parse(customThemes['quote']?['color'] ?? '0xff008000'))),
-    'variable': TextStyle(color: Color(int.parse(customThemes['variable']?['color'] ?? '0xff008000'))),
-    'keyword': TextStyle(color: Color(int.parse(customThemes['keyword']?['color'] ?? '0xff0000ff'))),
-    'selector-tag': TextStyle(color: Color(int.parse(customThemes['selector-tag']?['color'] ?? '0xff0000ff'))),
-    'built_in': TextStyle(color: Color(int.parse(customThemes['built_in']?['color'] ?? '0xff0000ff'))),
-    'name': TextStyle(color: Color(int.parse(customThemes['name']?['color'] ?? '0xff0000ff'))),
-    'tag': TextStyle(color: Color(int.parse(customThemes['tag']?['color'] ?? '0xff0000ff'))),
-    'string': TextStyle(color: Color(int.parse(customThemes['string']?['color'] ?? '0xffa31515'))),
-    'title': TextStyle(color: Color(int.parse(customThemes['title']?['color'] ?? '0xffa31515'))),
-    'section': TextStyle(color: Color(int.parse(customThemes['section']?['color'] ?? '0xffa31515'))),
-    'attribute': TextStyle(color: Color(int.parse(customThemes['attribute']?['color'] ?? '0xffa31515'))),
-    'literal': TextStyle(color: Color(int.parse(customThemes['literal']?['color'] ?? '0xffa31515'))),
-    'template-tag': TextStyle(color: Color(int.parse(customThemes['template-tag']?['color'] ?? '0xffa31515'))),
-    'template-variable': TextStyle(color: Color(int.parse(customThemes['template-variable']?['color'] ?? '0xffa31515'))),
-    'type': TextStyle(color: Color(int.parse(customThemes['type']?['color'] ?? '0xffa31515'))),
-    'addition': TextStyle(color: Color(int.parse(customThemes['addition']?['color'] ?? '0xffa31515'))),
-    'deletion': TextStyle(color: Color(int.parse(customThemes['deletion']?['color'] ?? '0xff2b91af'))),
-    'selector-attr': TextStyle(color: Color(int.parse(customThemes['selector-attr']?['color'] ?? '0xff2b91af'))),
-    'selector-pseudo': TextStyle(color: Color(int.parse(customThemes['selector-pseudo']?['color'] ?? '0xff2b91af'))),
-    'meta': TextStyle(color: Color(int.parse(customThemes['meta']?['color'] ?? '0xff2b91af'))),
-    'doctag': TextStyle(color: Color(int.parse(customThemes['doctag']?['color'] ?? '0xff808080'))),
-    'attr': TextStyle(color: Color(int.parse(customThemes['attr']?['color'] ?? '0xffff0000'))),
-    'symbol': TextStyle(color: Color(int.parse(customThemes['symbol']?['color'] ?? '0xff00b0e8'))),
-    'bullet': TextStyle(color: Color(int.parse(customThemes['bullet']?['color'] ?? '0xff00b0e8'))),
-    'link': TextStyle(color: Color(int.parse(customThemes['link']?['color'] ?? '0xff00b0e8'))),
-    'emphasis': TextStyle(fontStyle: getFontStyle(customThemes['emphasis']?['font_style'] ?? 'italic')),
-    'strong': TextStyle(fontWeight: getFontWeight(customThemes['strong']?['font_weight'] ?? 'bold')),
-    'subst': TextStyle(color: Color(int.parse(customThemes['subst']?['color'] ?? '0xff000000'))),
-    'selector-id': TextStyle(color: Color(int.parse(customThemes['selector-id']?['color'] ?? '0xffa31515'))),
-    'selector-class': TextStyle(color: Color(int.parse(customThemes['selector-class']?['color'] ?? '0xffa31515'))),
-    'regexp': TextStyle(color: Color(int.parse(customThemes['regexp']?['color'] ?? '0xff2b91af'))),
-    'meta-string': TextStyle(color: Color(int.parse(customThemes['meta-string']?['color'] ?? '0xff2b91af'))),
+    'comment': TextStyle(
+      color: Color(
+        int.parse(customThemes['comment']?['color'] ?? '0xff008000'),
+      ),
+    ),
+    'quote': TextStyle(
+      color: Color(int.parse(customThemes['quote']?['color'] ?? '0xff008000')),
+    ),
+    'variable': TextStyle(
+      color: Color(
+        int.parse(customThemes['variable']?['color'] ?? '0xff008000'),
+      ),
+    ),
+    'keyword': TextStyle(
+      color: Color(
+        int.parse(customThemes['keyword']?['color'] ?? '0xff0000ff'),
+      ),
+    ),
+    'selector-tag': TextStyle(
+      color: Color(
+        int.parse(customThemes['selector-tag']?['color'] ?? '0xff0000ff'),
+      ),
+    ),
+    'built_in': TextStyle(
+      color: Color(
+        int.parse(customThemes['built_in']?['color'] ?? '0xff0000ff'),
+      ),
+    ),
+    'name': TextStyle(
+      color: Color(int.parse(customThemes['name']?['color'] ?? '0xff0000ff')),
+    ),
+    'tag': TextStyle(
+      color: Color(int.parse(customThemes['tag']?['color'] ?? '0xff0000ff')),
+    ),
+    'string': TextStyle(
+      color: Color(int.parse(customThemes['string']?['color'] ?? '0xffa31515')),
+    ),
+    'title': TextStyle(
+      color: Color(int.parse(customThemes['title']?['color'] ?? '0xffa31515')),
+    ),
+    'section': TextStyle(
+      color: Color(
+        int.parse(customThemes['section']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'attribute': TextStyle(
+      color: Color(
+        int.parse(customThemes['attribute']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'literal': TextStyle(
+      color: Color(
+        int.parse(customThemes['literal']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'template-tag': TextStyle(
+      color: Color(
+        int.parse(customThemes['template-tag']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'template-variable': TextStyle(
+      color: Color(
+        int.parse(
+          customThemes['template-variable']?['color'] ?? '0xffa31515',
+        ),
+      ),
+    ),
+    'type': TextStyle(
+      color: Color(int.parse(customThemes['type']?['color'] ?? '0xffa31515')),
+    ),
+    'addition': TextStyle(
+      color: Color(
+        int.parse(customThemes['addition']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'deletion': TextStyle(
+      color: Color(
+        int.parse(customThemes['deletion']?['color'] ?? '0xff2b91af'),
+      ),
+    ),
+    'selector-attr': TextStyle(
+      color: Color(
+        int.parse(
+          customThemes['selector-attr']?['color'] ?? '0xff2b91af',
+        ),
+      ),
+    ),
+    'selector-pseudo': TextStyle(
+      color: Color(
+        int.parse(
+          customThemes['selector-pseudo']?['color'] ?? '0xff2b91af',
+        ),
+      ),
+    ),
+    'meta': TextStyle(
+      color: Color(int.parse(customThemes['meta']?['color'] ?? '0xff2b91af')),
+    ),
+    'doctag': TextStyle(
+      color: Color(int.parse(customThemes['doctag']?['color'] ?? '0xff808080')),
+    ),
+    'attr': TextStyle(
+      color: Color(int.parse(customThemes['attr']?['color'] ?? '0xffff0000')),
+    ),
+    'symbol': TextStyle(
+      color: Color(int.parse(customThemes['symbol']?['color'] ?? '0xff00b0e8')),
+    ),
+    'bullet': TextStyle(
+      color: Color(int.parse(customThemes['bullet']?['color'] ?? '0xff00b0e8')),
+    ),
+    'link': TextStyle(
+      color: Color(int.parse(customThemes['link']?['color'] ?? '0xff00b0e8')),
+    ),
+    'emphasis': TextStyle(
+      fontStyle: getFontStyle(customThemes['emphasis']?['font_style'] ?? 'italic'),
+    ),
+    'strong': TextStyle(
+      fontWeight: getFontWeight(customThemes['strong']?['font_weight'] ?? 'bold'),
+    ),
+    'subst': TextStyle(
+      color: Color(int.parse(customThemes['subst']?['color'] ?? '0xff000000')),
+    ),
+    'selector-id': TextStyle(
+      color: Color(
+        int.parse(customThemes['selector-id']?['color'] ?? '0xffa31515'),
+      ),
+    ),
+    'selector-class': TextStyle(
+      color: Color(
+        int.parse(
+          customThemes['selector-class']?['color'] ?? '0xffa31515',
+        ),
+      ),
+    ),
+    'regexp': TextStyle(
+      color: Color(int.parse(customThemes['regexp']?['color'] ?? '0xff2b91af')),
+    ),
+    'meta-string': TextStyle(
+      color: Color(
+        int.parse(customThemes['meta-string']?['color'] ?? '0xff2b91af'),
+      ),
+    ),
     'meta-keyword': TextStyle(
-      color: Color(int.parse(customThemes['meta-keyword']?['color'] ?? '0xff0000ff')),
+      color: Color(
+        int.parse(customThemes['meta-keyword']?['color'] ?? '0xff0000ff'),
+      ),
       fontWeight: getFontWeight(customThemes['meta-keyword']?['font_weight'] ?? 'bold'),
     ),
-    'builtin-name': TextStyle(color: Color(int.parse(customThemes['builtin-name']?['color'] ?? '0xff0000ff'))),
-    'params': TextStyle(color: Color(int.parse(customThemes['params']?['color'] ?? '0xffa31515'))),
-    'formula': TextStyle(color: Color(int.parse(customThemes['formula']?['color'] ?? '0xff808080'))),
-    'code': TextStyle(color: Color(int.parse(customThemes['code']?['color'] ?? '0xff008000'))),
-    'number': TextStyle(color: Color(int.parse(customThemes['number']?['color'] ?? '0xffa31515'))),
+    'builtin-name': TextStyle(
+      color: Color(
+        int.parse(customThemes['builtin-name']?['color'] ?? '0xff0000ff'),
+      ),
+    ),
+    'params': TextStyle(
+      color: Color(int.parse(customThemes['params']?['color'] ?? '0xffa31515')),
+    ),
+    'formula': TextStyle(
+      color: Color(
+        int.parse(customThemes['formula']?['color'] ?? '0xff808080'),
+      ),
+    ),
+    'code': TextStyle(
+      color: Color(int.parse(customThemes['code']?['color'] ?? '0xff008000')),
+    ),
+    'number': TextStyle(
+      color: Color(int.parse(customThemes['number']?['color'] ?? '0xffa31515')),
+    ),
   };
 }

@@ -345,7 +345,10 @@ class _JinjaSpecificFoldableBlockParser extends HighlightFoldableBlockParser {
   }
 
   /// Processes template variables `{{ ... }}` that span multiple lines.
-  void _processTemplateVariable(Node node, Set<Object?> serviceCommentsSources) {
+  void _processTemplateVariable(
+    Node node,
+    Set<Object?> serviceCommentsSources,
+  ) {
     final newlineCount = node.getNewlineCount();
 
     // Only create foldable blocks for multi-line template variables
