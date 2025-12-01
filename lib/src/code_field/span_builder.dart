@@ -170,19 +170,29 @@ class SpanBuilder {
     final hasOpenBrace = nodeValue.contains('{');
     final hasCloseBrace = nodeValue.contains('}');
 
-    final shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
+    bool shouldHighlight = (isTemplateTag && (isOnFirstLine || isOnLastLine)) ||
         (isKeyword && isOnFirstLine) ||
         (isTitle && isOnFirstLine) ||
         (isType && isOnFirstLine) ||
         (isParams && isOnFirstLine) ||
         (isMeta && isOnFirstLine) ||
         (hasOpenBrace && isOnFirstLine) ||
+        (_containsLanguageBuiltInTypes(nodeValue) && isOnFirstLine) ||
+        (nodeValue.trim().isEmpty && isOnFirstLine) ||
         (hasCloseBrace && isOnLastLine);
 
+    // Special handling for Java built-in types within parameter lists on foldable block boundaries
+    // Some highlighting libraries don't assign 'type' class to built-in types like String, Integer
+    // We only apply this enhancement when there are foldable blocks to highlight boundaries
+    if (code.foldableBlocks.isNotEmpty && !shouldHighlight && isOnFirstLine && isParams) {
+      shouldHighlight = true;
+    }
+
     if (shouldHighlight) {
-      final String actualValue = node.value ?? (node.children?.map((e) => e.value ?? '').join() ?? '');
-      final valueLog = actualValue.isEmpty ? 'null (container)' : '"${actualValue.replaceAll('\n', r'\n')}"';
-      print('Highlighting node: class="${node.className}", value=$valueLog at line $fullLineBeforeUpdate');
+      // Optional: You can uncomment the following for debugging highlighting behavior
+      // final String actualValue = node.value ?? (node.children?.map((e) => e.value ?? '').join() ?? '');
+      // final valueLog = actualValue.isEmpty ? 'null (container)' : '"${actualValue.replaceAll('\n', r'\n')}"';
+      // print('Highlighting node: class="${node.className}", value=$valueLog at line $fullLineBeforeUpdate');
     }
 
     _updateLineIndex(node);
@@ -202,6 +212,59 @@ class SpanBuilder {
       ),
       style: processedStyle,
     );
+  }
+
+  /// Checks if the given text contains common Java built-in type names
+  bool _containsLanguageBuiltInTypes(String text) {
+    // Common Java built-in types and wrapper classes
+    const javaBuiltInTypes = {
+      'string',
+      'int',
+      'double',
+      'float',
+      'long',
+      'short',
+      'byte',
+      'boolean',
+      'char',
+      'Integer',
+      'Double',
+      'Float',
+      'Long',
+      'Short',
+      'Byte',
+      'Boolean',
+      'Character',
+      'Void',
+      'Object',
+      'Class',
+      'Enum',
+      'Annotation',
+      'List',
+      'ArrayList',
+      'LinkedList',
+      'Map',
+      'HashMap',
+      'LinkedHashMap',
+      'TreeMap',
+      'Set',
+      'HashSet',
+      'TreeSet',
+      'LinkedHashSet',
+      'Collection',
+      'Iterable',
+      'Iterator',
+      'Comparator',
+      'Comparable',
+    };
+
+    // Check if the text contains any of the built-in type names
+    for (final type in javaBuiltInTypes) {
+      if (text.trim().toLowerCase().contains(type.trim().toLowerCase())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /// Applies background color highlighting if this is a template-tag on a block boundary.
