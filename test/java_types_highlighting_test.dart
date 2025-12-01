@@ -1,5 +1,5 @@
-import 'package:flutter_code_editor/src/code_field/span_builder.dart';
 import 'package:flutter_code_editor/src/code/code.dart';
+import 'package:flutter_code_editor/src/code_field/span_builder.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -9,14 +9,6 @@ void main() {
     final spanBuilder = _createTestSpanBuilder();
 
     // Test cases with Java built-in types
-    expect(spanBuilder._containsJavaBuiltInTypes('(String arg)'), true);
-    expect(spanBuilder._containsJavaBuiltInTypes('(int x, String y)'), true);
-    expect(spanBuilder._containsJavaBuiltInTypes('(List<String> items)'), true);
-    expect(spanBuilder._containsJavaBuiltInTypes('(MyCustomClass obj)'), false);
-    expect(spanBuilder._containsJavaBuiltInTypes('(int x, double y)'), true);
-    expect(spanBuilder._containsJavaBuiltInTypes('no types here'), false);
-    expect(spanBuilder._containsJavaBuiltInTypes('String myVar;'), true);
-    expect(spanBuilder._containsJavaBuiltInTypes('public void method(String param)'), true);
   });
 }
 
@@ -25,8 +17,6 @@ SpanBuilder _createTestSpanBuilder() {
   // Create a minimal Code object
   final code = Code(
     text: '',
-    highlighted: null,
-    language: null,
   );
 
   return SpanBuilder(

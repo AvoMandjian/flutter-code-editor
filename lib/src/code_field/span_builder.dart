@@ -166,7 +166,7 @@ class SpanBuilder {
     final isType = node.className == NodeClasses.type;
     final isParams = node.className == NodeClasses.params;
     final isMeta = node.className == NodeClasses.meta;
-    final nodeValue = node.value ?? '';
+    final nodeValue = (node.value ?? '').trim();
     final hasOpenBrace = nodeValue.contains('{');
     final hasCloseBrace = nodeValue.contains('}');
 
@@ -178,7 +178,7 @@ class SpanBuilder {
         (isMeta && isOnFirstLine) ||
         (hasOpenBrace && isOnFirstLine) ||
         (_containsLanguageBuiltInTypes(nodeValue) && isOnFirstLine) ||
-        (nodeValue.trim().isEmpty && isOnFirstLine) ||
+        (nodeValue.isEmpty && isOnFirstLine && !isTemplateTag) ||
         (hasCloseBrace && isOnLastLine);
 
     // Special handling for Java built-in types within parameter lists on foldable block boundaries
@@ -214,52 +214,16 @@ class SpanBuilder {
     );
   }
 
-  /// Checks if the given text contains common Java built-in type names
+  /// Checks if the given text contains built-in type names for the current language
   bool _containsLanguageBuiltInTypes(String text) {
-    // Common Java built-in types and wrapper classes
-    const javaBuiltInTypes = {
-      'string',
-      'int',
-      'double',
-      'float',
-      'long',
-      'short',
-      'byte',
-      'boolean',
-      'char',
-      'Integer',
-      'Double',
-      'Float',
-      'Long',
-      'Short',
-      'Byte',
-      'Boolean',
-      'Character',
-      'Void',
-      'Object',
-      'Class',
-      'Enum',
-      'Annotation',
-      'List',
-      'ArrayList',
-      'LinkedList',
-      'Map',
-      'HashMap',
-      'LinkedHashMap',
-      'TreeMap',
-      'Set',
-      'HashSet',
-      'TreeSet',
-      'LinkedHashSet',
-      'Collection',
-      'Iterable',
-      'Iterator',
-      'Comparator',
-      'Comparable',
-    };
+    // Get the current language from the highlighted result
+    final currentLanguage = code.highlighted?.language ?? code.visibleHighlighted?.language;
+
+    // Define built-in types for different languages
+    final builtInTypes = _getBuiltInTypes(currentLanguage);
 
     // Check if the text contains any of the built-in type names
-    for (final type in javaBuiltInTypes) {
+    for (final type in builtInTypes) {
       if (text.trim().toLowerCase().contains(type.trim().toLowerCase())) {
         return true;
       }
@@ -300,4 +264,313 @@ class SpanBuilder {
     }
     return style;
   }
+}
+
+const _javaTypes = {
+  'string',
+  'int',
+  'double',
+  'float',
+  'long',
+  'short',
+  'byte',
+  'boolean',
+  'char',
+  'Integer',
+  'Double',
+  'Float',
+  'Long',
+  'Short',
+  'Byte',
+  'Boolean',
+  'Character',
+  'Void',
+  'Object',
+  'Class',
+  'Enum',
+  'Annotation',
+  'List',
+  'ArrayList',
+  'LinkedList',
+  'Map',
+  'HashMap',
+  'LinkedHashMap',
+  'TreeMap',
+  'Set',
+  'HashSet',
+  'Treeet',
+  'LinkedHashSet',
+  'Collection',
+  'Iterable',
+  'Iterator',
+  'Comparator',
+  'Comparable',
+};
+
+const _jsTypes = {
+  'string',
+  'number',
+  'boolean',
+  'undefined',
+  'null',
+  'object',
+  'array',
+  'function',
+  'symbol',
+  'bigint',
+  'String',
+  'Number',
+  'Boolean',
+  'Object',
+  'Array',
+  'Function',
+  'Symbol',
+  'BigInt',
+  'Date',
+  'RegExp',
+  'Error',
+  'Map',
+  'Set',
+  'WeakMap',
+  'WeakSet',
+  'Promise',
+  'Generator',
+  'AsyncFunction',
+};
+
+const _tsTypes = {
+  ..._jsTypes,
+  'void',
+  'any',
+  'unknown',
+  'never',
+};
+
+const _dartTypes = {
+  'string',
+  'int',
+  'double',
+  'bool',
+  'dynamic',
+  'void',
+  'null',
+  'Object',
+  'List',
+  'Map',
+  'Set',
+  'Iterable',
+  'String',
+  'Int',
+  'Double',
+  'Bool',
+  'Null',
+};
+
+const _csharpTypes = {
+  'string',
+  'int',
+  'double',
+  'float',
+  'long',
+  'short',
+  'byte',
+  'bool',
+  'char',
+  'decimal',
+  'sbyte',
+  'uint',
+  'ulong',
+  'ushort',
+  'String',
+  'Int32',
+  'Double',
+  'Single',
+  'Int64',
+  'Int16',
+  'Byte',
+  'Boolean',
+  'Char',
+  'Decimal',
+  'SByte',
+  'UInt32',
+  'UInt64',
+  'UInt16',
+  'Object',
+  'Void',
+  'Nullable',
+  'DateTime',
+  'List',
+  'Dictionary',
+  'IEnumerable',
+  'IList',
+};
+
+const _cppTypes = {
+  'int',
+  'double',
+  'float',
+  'long',
+  'short',
+  'byte',
+  'bool',
+  'char',
+  'wchar_t',
+  'char16_t',
+  'char32_t',
+  'void',
+  'auto',
+  'unsigned',
+  'signed',
+  'const',
+  'volatile',
+  'string',
+  'String',
+  'vector',
+  'array',
+  'map',
+  'set',
+  'list',
+  'queue',
+  'stack',
+  'pair',
+  'tuple',
+};
+
+const _pythonTypes = {
+  'int',
+  'float',
+  'str',
+  'bool',
+  'list',
+  'tuple',
+  'dict',
+  'set',
+  'frozenset',
+  'bytes',
+  'bytearray',
+  'complex',
+  'memoryview',
+  'type',
+  'object',
+  'None',
+  'Ellipsis',
+  'NotImplemented',
+  'True',
+  'False',
+};
+
+const _goTypes = {
+  'string',
+  'int',
+  'int8',
+  'int16',
+  'int32',
+  'int64',
+  'uint',
+  'uint8',
+  'uint16',
+  'uint32',
+  'uint64',
+  'uintptr',
+  'byte',
+  'rune',
+  'float32',
+  'float64',
+  'complex64',
+  'complex128',
+  'bool',
+  'error',
+  'interface{}',
+  'map',
+  'slice',
+  'chan',
+};
+
+const _rustTypes = {
+  'i8',
+  'i16',
+  'i32',
+  'i64',
+  'i128',
+  'u8',
+  'u16',
+  'u32',
+  'u64',
+  'u128',
+  'f32',
+  'f64',
+  'bool',
+  'char',
+  'str',
+  'String',
+  'Vec',
+  'Option',
+  'Result',
+  'Box',
+  'Rc',
+  'Arc',
+  'Slice',
+  'Array',
+  'Tuple',
+  'Reference',
+  'RawPointer',
+  'Fn',
+  'FnMut',
+  'FnOnce',
+};
+
+const _kotlinTypes = {
+  'string',
+  'int',
+  'double',
+  'float',
+  'long',
+  'short',
+  'byte',
+  'boolean',
+  'char',
+  'String',
+  'Int',
+  'Double',
+  'Float',
+  'Long',
+  'Short',
+  'Byte',
+  'Boolean',
+  'Char',
+  'Unit',
+  'Any',
+  'Nothing',
+  'Array',
+  'List',
+  'MutableList',
+  'Set',
+  'MutableSet',
+  'Map',
+  'MutableMap',
+};
+
+final _builtInTypesByLang = <String, Set<String>>{
+  'java': _javaTypes,
+  'javascript': _jsTypes,
+  'js': _jsTypes,
+  'ecmascript': _jsTypes,
+  'typescript': _tsTypes,
+  'ts': _tsTypes,
+  'dart': _dartTypes,
+  'csharp': _csharpTypes,
+  'c#': _csharpTypes,
+  'cpp': _cppTypes,
+  'c++': _cppTypes,
+  'python': _pythonTypes,
+  'py': _pythonTypes,
+  'go': _goTypes,
+  'rust': _rustTypes,
+  'rs': _rustTypes,
+  'kotlin': _kotlinTypes,
+  'kt': _kotlinTypes,
+};
+
+Set<String> _getBuiltInTypes(String? language) {
+  return _builtInTypesByLang[language?.toLowerCase()] ?? _javaTypes;
 }
