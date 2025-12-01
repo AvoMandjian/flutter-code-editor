@@ -42,6 +42,7 @@ class Code {
   final Result? visibleHighlighted;
   final String visibleText;
   final Set<String> visibleSectionNames;
+  final Mode? language;
 
   final HiddenRangesBuilder _hiddenRangesBuilder;
 
@@ -150,6 +151,7 @@ class Code {
       visibleHighlighted: hiddenRanges.cutHighlighted(highlighted)?.splitLines(),
       visibleText: hiddenRanges.cutString(text),
       visibleSectionNames: visibleSectionNames,
+      language: language,
     );
   }
 
@@ -167,6 +169,7 @@ class Code {
     required this.visibleHighlighted,
     required this.visibleText,
     required this.visibleSectionNames,
+    this.language,
   }) : _hiddenRangesBuilder = hiddenRangesBuilder;
 
   static const empty = Code._(
@@ -519,6 +522,7 @@ class Code {
       visibleHighlighted: hiddenRanges.cutHighlighted(highlighted)?.splitLines(),
       visibleText: hiddenRanges.cutString(text),
       visibleSectionNames: visibleSectionNames,
+      language: language,
     );
   }
 }
