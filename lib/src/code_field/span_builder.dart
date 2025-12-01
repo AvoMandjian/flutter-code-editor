@@ -74,7 +74,15 @@ class SpanBuilder {
       }
     }
 
-    return containingBlocks;
+    if (containingBlocks.isEmpty) {
+      return {};
+    }
+
+    return {
+      containingBlocks.reduce(
+        (a, b) => a.lineCount < b.lineCount ? a : b,
+      ),
+    };
   }
 
   /// Gets the set of first lines of blocks containing the cursor.

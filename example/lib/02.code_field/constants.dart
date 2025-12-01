@@ -1,8 +1,6 @@
 const javaTemplateSource = '''
 $templateSource
 public class AgentCommunication {
-    // Simulates agent-like communication between two 'agents'.
-    // Mirrors Flutter A2A widget interop where one calls a method on another and gets a result.
     public static String agentCommunicate(String callerData, AgentProcessor receiver) {
         return receiver.process(callerData);
     }
