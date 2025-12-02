@@ -22,22 +22,14 @@ class _ErrorTrackingExampleState extends State<ErrorTrackingExample> {
     super.initState();
     controller = CodeController(
       text: '''
-public class Main 
-  public static void main(String[] args) {
+public class Main {
+  public static void main(String[] args) 
     int a = 5
-    int b = 10;
+    int b = 10
   }
 }
 ''',
       language: java,
-      analyzer: LocalAnalyzer(
-        rules: [
-          PatternRule(
-            pattern: RegExp(r'[^;\{\}\s]\s*$'),
-            message: 'Line must end with ;',
-          ),
-        ],
-      ),
     );
   }
 

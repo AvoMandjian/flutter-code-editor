@@ -254,10 +254,10 @@ class CodeController extends TextEditingController {
     }
 
     analysisResult = result;
-    // print('CodeController: Analysis finished. Issues found: ${analysisResult.issues.length}');
-    // for (final issue in analysisResult.issues) {
-    //   print('Issue found at line ${issue.line}: ${issue.message}');
-    // }
+    print('CodeController: Analysis finished. Issues found: ${analysisResult.issues.length}');
+    for (final issue in analysisResult.issues) {
+      print('Issue found at line ${issue.line}: ${issue.message}');
+    }
 
     _lastAnalyzedText = codeSentToAnalysis.text;
     notifyListeners();

@@ -30,30 +30,43 @@ class PatternRule extends Rule {
   @override
   Future<List<Issue>> analyze(Code code) async {
     final issues = <Issue>[];
+    print('PatternRule: Analyzing ${code.lines.lines.length} lines with pattern "${pattern.pattern}"');
 
     if (checkByLine) {
-      for (int i = 0; i < code.lines.lines.length; i++) {
+      for (var i = 0; i < code.lines.lines.length; i++) {
         final line = code.lines.lines[i];
-        if (pattern.hasMatch(line.text)) {
-          issues.add(Issue(
-            line: i,
-            message: message,
-            type: type,
-          ));
+        final hasMatch = pattern.hasMatch(line.text);
+
+        if (i < 10) {
+          // Log first 10 lines
+          print('Line $i: "${line.text.replaceAll('\n', r'\n')}" -> Match: $hasMatch');
+        }
+
+        if (hasMatch) {
+          issues.add(
+            Issue(
+              line: i,
+              message: message,
+              type: type,
+            ),
+          );
         }
       }
     } else {
       final matches = pattern.allMatches(code.text);
       for (final match in matches) {
         final lineIndex = code.lines.characterIndexToLineIndex(match.start);
-        issues.add(Issue(
-          line: lineIndex,
-          message: message,
-          type: type,
-        ));
+        issues.add(
+          Issue(
+            line: lineIndex,
+            message: message,
+            type: type,
+          ),
+        );
       }
     }
 
+    print('PatternRule: Found ${issues.length} issues');
     return issues;
   }
 }
