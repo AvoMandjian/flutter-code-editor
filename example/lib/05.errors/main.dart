@@ -22,13 +22,51 @@ class _ErrorTrackingExampleState extends State<ErrorTrackingExample> {
     super.initState();
     controller = CodeController(
       text: '''
-public class Main {
-  public static void main(String[] args) 
-    int a = 5
-    int b = 10
-  }
-}
-''',
+// Clean and valid Java example matching the same structure as the malformed one
+import java.util.ArrayList;
+import java.util.List;
+
+public class CleanExample implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println("Running...");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Start");
+
+        int x = 10;
+        if (x == 5) {
+            doSomething();
+        }
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println(i);
+        }
+
+        String text = "hello";
+
+        CleanExample example = new CleanExample();
+        example.run();
+
+        try {
+            example.safeCall();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            System.out.println("Cleanup completed");
+        }
+    }
+
+    public static void doSomething() {
+        System.out.println("Doing something");
+    }
+
+    public void safeCall() {
+        System.out.println("Safe call");
+    }
+}''',
       language: java,
     );
   }

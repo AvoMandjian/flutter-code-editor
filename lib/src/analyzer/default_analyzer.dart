@@ -14,25 +14,147 @@ class DefaultLocalAnalyzer extends AbstractAnalyzer {
   static final _rulesByMode = <Mode, List<Rule>>{
     java_lang.java: [
       // Detect class/interface/enum declarations missing opening brace
-      // Matches class/interface/enum declarations that don't end with {
-      // Pattern: class name followed by content that doesn't end with {
       PatternRule(
-        pattern: RegExp(r'^\s*(public|private|protected|static|final|abstract)?\s*(class|interface|enum)\s+\w+\s*[^{]\s*$'),
+        pattern: RegExp(
+          r'^\s*(public|private|protected|static|final|abstract)?\s*(class|interface|enum)\s+\w+.*[^{\s]$',
+        ),
         message: 'Class/interface/enum declaration must end with {',
       ),
+
       // Detect method declarations missing opening brace
-      // Matches: modifiers* returnType methodName(params) [not ending with {]
-      // Handles multiple modifiers like "public static void main(...)"
       PatternRule(
-        pattern: RegExp(r'^\s*((public|private|protected|static|final|abstract|synchronized|native)\s+)*\w+\s+\w+\s*\([^)]*\)\s*[^{]\s*$'),
+        pattern: RegExp(
+          r'^\s*((public|private|protected|static|final|abstract|synchronized|native)\s+)*\w+\s+\w+\s*\([^)]*\)\s*$',
+        ),
         message: 'Method declaration must end with {',
       ),
-      // Detect statements (assignments) missing semicolon
-      // Only matches assignments (=), not method calls (which might be declarations)
-      // Matches: anything with = followed by value that doesn't end with ;, {, or }
+
+      // Detect statements missing semicolon
       PatternRule(
-        pattern: RegExp(r'.*=\s*.*[^;\{\}\s]\s*$'),
+        pattern: RegExp(
+          r'.*=\s*.+[^;\{\}\s]$',
+        ),
         message: 'Line must end with ;',
+      ),
+
+      // Detect unclosed string literal
+      PatternRule(
+        pattern: RegExp(
+          r'".*$',
+        ),
+        message: 'Unclosed string literal',
+      ),
+
+      // Detect import without semicolon
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*import\s+[^;]+$',
+        ),
+        message: 'Import statement must end with ;',
+      ),
+
+      // Detect duplicate modifiers in declarations
+      PatternRule(
+        pattern: RegExp(
+          r'\b(public|private|protected|static|final|abstract)\b.*\b\1\b',
+        ),
+        message: 'Duplicate modifier in declaration',
+      ),
+
+      // Detect illegal/non-Java symbols or corrupted tokens
+      PatternRule(
+        pattern: RegExp(
+          '[^\\w\\s\\(\\)\\{\\}\\[\\]\\.;,:<>\\+\\-\\*/="\',\\s]+',
+        ),
+        message: 'Invalid or non-Java tokens detected',
+      ),
+
+      // Detect malformed generics (<<<<, >, stray <, etc.)
+      PatternRule(
+        pattern: RegExp(
+          r'<\s*([>\s]|<?\s*<|,\s*(>|<))',
+        ),
+        message: 'Malformed generic type',
+      ),
+
+      // Detect unmatched opening parenthesis
+      PatternRule(
+        pattern: RegExp(
+          r'\([^)]*$',
+        ),
+        message: 'Unmatched opening parenthesis',
+      ),
+
+      // Detect unmatched closing parenthesis
+      PatternRule(
+        pattern: RegExp(
+          r'^[^(\n]*\)[^)]*$',
+        ),
+        message: 'Unmatched closing parenthesis',
+      ),
+
+      // Detect missing return type before method name
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*(public|private|protected|static|final|abstract)\s+[A-Za-z_]\w*\s*\([^)]*\)\s*\{',
+        ),
+        message: 'Method is missing a return type',
+      ),
+
+      // Detect invalid catch block (missing parentheses)
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*catch\s+[A-Za-z_]\w*(\s+\w+)?\s*$',
+        ),
+        message: 'Invalid catch block syntax',
+      ),
+
+      // Detect broken try/catch/finally sequences
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*(finally|else)\s+(finally|else)',
+        ),
+        message: 'Invalid control block sequence',
+      ),
+
+      // Detect stray commas in argument list
+      PatternRule(
+        pattern: RegExp(
+          r'\([^)]*,\s*\)',
+        ),
+        message: 'Malformed argument list',
+      ),
+
+      // Detect illegal keyword sequences
+      PatternRule(
+        pattern: RegExp(
+          r'\b(for\s+return|return\s+return|break\s+continue|while\s+for)\b',
+        ),
+        message: 'Illegal keyword combination',
+      ),
+
+      // Detect too many closing braces
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*}+\s*}+\s*}+',
+        ),
+        message: 'Too many closing braces',
+      ),
+
+      // Detect malformed annotations
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*@[^A-Za-z_]',
+        ),
+        message: 'Malformed annotation',
+      ),
+
+      // Detect incomplete method signature
+      PatternRule(
+        pattern: RegExp(
+          r'^\s*[A-Za-z_]\w*\s+[A-Za-z_]\w*\s*\([^)]*$',
+        ),
+        message: 'Incomplete method declaration',
       ),
     ],
   };
