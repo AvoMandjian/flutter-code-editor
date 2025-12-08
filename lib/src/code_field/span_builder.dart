@@ -12,7 +12,7 @@ import '../highlight/node_classes.dart';
 /// Background color for highlighting block boundary tags (start and end tags of foldable blocks).
 /// Uses a darker blue with good contrast for both light and dark themes.
 @visibleForTesting
-const blockBoundaryBackgroundColor = Color(0x0ffaafab);
+const blockBoundaryBackgroundColor = Color.fromARGB(45, 250, 175, 171);
 
 class SpanBuilder {
   final Code code;
