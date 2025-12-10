@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:highlight/highlight_core.dart';
+import 'package:highlight/languages/all.dart';
 import 'package:meta/meta.dart';
 
 import '../../flutter_code_editor.dart';
@@ -260,6 +261,13 @@ class CodeController extends TextEditingController {
     }
 
     _lastAnalyzedText = codeSentToAnalysis.text;
+    notifyListeners();
+  }
+
+  void setSubLanguage(String subLanguage) {
+    this.subLanguage = subLanguage;
+    autocompleter.mode = allLanguages[subLanguage];
+    _updateCode(_code.text);
     notifyListeners();
   }
 
