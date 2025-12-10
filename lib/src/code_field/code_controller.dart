@@ -265,8 +265,22 @@ class CodeController extends TextEditingController {
   }
 
   void setSubLanguage(String subLanguage) {
+    if (subLanguage == this.subLanguage) {
+      return;
+    }
+
+    final mode = allLanguages[subLanguage];
+    if (mode == null) {
+      // Handle invalid language (optional: throw error or return)
+      return;
+    }
+
     this.subLanguage = subLanguage;
-    autocompleter.mode = allLanguages[subLanguage];
+
+    // CRITICAL: Register the language so highlight.parse knows about it
+    highlight.registerLanguage(subLanguage, mode);
+
+    autocompleter.mode = mode;
     _updateCode(_code.text);
     notifyListeners();
   }
