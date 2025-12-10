@@ -36,42 +36,45 @@ class CodeLines with EquatableMixin {
     int upperLine = lines.length - 1;
 
     while (true) {
-      final lowerCharacter = lines[lowerLine].textRange.start;
-      final upperCharacter = lines[upperLine].textRange.end;
+      try {
+        {
+          final lowerCharacter = lines[lowerLine].textRange.start;
+          final upperCharacter = lines[upperLine].textRange.end;
 
-      if (upperCharacter == lowerCharacter) {
-        return lowerLine; // Empty line case, avoid division by zero.
-      }
+          if (upperCharacter == lowerCharacter) {
+            return lowerLine; // Empty line case, avoid division by zero.
+          }
 
-      // Linear interpolation search.
-      final lineIndex = lowerLine +
-          ((upperLine - lowerLine) *
-                  (characterIndex - lowerCharacter) /
-                  (upperCharacter - lowerCharacter))
-              .floor();
+          // Linear interpolation search.
+          final lineIndex =
+              lowerLine + ((upperLine - lowerLine) * (characterIndex - lowerCharacter) / (upperCharacter - lowerCharacter)).floor();
 
-      final line = lines[lineIndex];
+          final line = lines[lineIndex];
 
-      if (characterIndex < line.textRange.start) {
-        // Character is before the current line. Next search before it.
-        upperLine = lineIndex - 1;
-        continue;
-      }
+          if (characterIndex < line.textRange.start) {
+            // Character is before the current line. Next search before it.
+            upperLine = lineIndex - 1;
+            continue;
+          }
 
-      if (characterIndex > line.textRange.end) {
-        // Character is after this line. Next search after it.
-        lowerLine = lineIndex + 1;
-        continue;
-      }
+          if (characterIndex > line.textRange.end) {
+            // Character is after this line. Next search after it.
+            lowerLine = lineIndex + 1;
+            continue;
+          }
 
-      if (characterIndex == line.textRange.end) {
-        if (line.text.characters.lastOrNull == '\n') {
-          // Character is just after this string's \n, it is the next line.
-          return lineIndex + 1;
+          if (characterIndex == line.textRange.end) {
+            if (line.text.characters.lastOrNull == '\n') {
+              // Character is just after this string's \n, it is the next line.
+              return lineIndex + 1;
+            }
+          }
+
+          return lineIndex;
         }
+      } catch (e) {
+        return lowerLine;
       }
-
-      return lineIndex;
     }
   }
 
